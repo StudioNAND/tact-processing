@@ -1,3 +1,5 @@
-.classpath
-.DS_Store
+*.classpath
+*.project
+*.prefs
+*.DS_Store
 distribution/*
