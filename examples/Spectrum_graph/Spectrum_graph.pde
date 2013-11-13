@@ -2,7 +2,7 @@
  * Tact for Processing example
  * Studio NAND (http://www.nand.io), Nov 2013
  *
- * https://github.com/StudioNAND/tact-processing 
+ * https://github.com/StudioNAND/tact-processing
  */
 
 import creativecoding.tact.*;
@@ -13,16 +13,17 @@ TactSensor sensor;
 
 void setup () {
   size (800, 600);
-  strokeWeight (3);
+  strokeWeight (5);
 
   // Init Tact sensor
   tact = new Tact (this);
   
   // Tell Tact which parts to get 
   // of the sensor's signal spectrum.
-  tact.spectrumStart(40);
+  tact.spectrumStart(48);
   tact.spectrumLength(32);
   
+  // Registers a new sensor
   sensor = tact.addSensor("Sensor A");
   
   // Start listening on serial port 5
@@ -42,24 +43,21 @@ void draw () {
   float xstep = float(width) / (values.length - 1);
   float ystep = float(height) / 1024;
 
-  // Draw graph whereby value-entry is 
-  // represented by a single line section
-
+  // Start drawing new shape
+  beginShape ();
   // For each value...
-  for (int i=1; i < values.length; i++) {
-    // Draw line section
-    line (
-      (i-1) * xstep, 
-      values[i-1] * ystep, 
-      i * xstep, 
-      values[i] * ystep
-    );
+  for (int i=0; i < values.length; i++) {
+    // Add vertex to line shape
+    vertex (i * xstep, values[i] * ystep);
   }
+  // End drawing line
+  endShape ();
 }
 
-// 
-void tactEvent(TactEvent e) {
-  println("Signal length: " + e.sensor.latestValues().length);
+// Called each time when tact received
+// fresh data from one of the tact sensors
+void tactEvent (TactEvent e) {
+  println ("Sensor bias: " + e.sensor.bias());
 }
 
 // Stop Tact Serial communication
