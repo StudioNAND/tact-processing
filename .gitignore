@@ -3,3 +3,4 @@
 *.prefs
 *.DS_Store
 distribution/*
+bin/*
