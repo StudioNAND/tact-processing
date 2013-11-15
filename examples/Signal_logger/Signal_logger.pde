@@ -8,9 +8,18 @@
 import creativecoding.tact.*;
 import processing.serial.*;
 import java.io.FileWriter;
+import java.util.*;
+import java.text.*;
 
 Tact tact;
 TactSensor sensor;
+
+// We want to log each sensor event with an ISO 8601 date string
+// (https://en.wikipedia.org/wiki/ISO_8601) for easier usage with
+// other programming/scripting languages such as JavaScript, Python etc.
+// For this, we need our time zone and a date formatter
+TimeZone timeZone;
+DateFormat isoDateFormat;
 
 // Buffer to hold rows that shall be 
 // written to CSV document.
@@ -55,6 +64,11 @@ void setup() {
   // listing on Serial port 5
   // (you might have to adjust that)
   tact.start(5);
+  
+  timeZone = TimeZone.getDefault();
+  isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+  isoDateFormat.setTimeZone( timeZone );
+  isoDateFormat.format( new Date() );
 }
 
 void draw() {
