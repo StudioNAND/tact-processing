@@ -62,6 +62,8 @@ public class Tact {
 	
 	private boolean running = false;
 	
+	public int sleep = 2;
+	
 	/**
 	 * Tact serial update thread.
 	 */
@@ -400,7 +402,7 @@ public class Tact {
 				
 				// Get some rest...
 				try {
-					Thread.sleep (2);
+					Thread.sleep (sleep);
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
 				}
