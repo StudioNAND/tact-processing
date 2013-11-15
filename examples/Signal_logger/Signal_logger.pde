@@ -2,7 +2,7 @@
  * Tact for Processing example
  * Studio NAND (http://www.nand.io), Nov 2013
  *
- * https://github.com/StudioNAND/tact-processing 
+ * https://github.com/StudioNAND/tact-processing
  */
 
 import creativecoding.tact.*;
@@ -28,6 +28,11 @@ void setup() {
   
   // Create new Tact toolkit
   tact = new Tact(this);
+  
+  // This will slow down the tact sensor
+  // by waiting 70 milli-seconds between 
+  // each update cycle.
+  tact.sleep = 70;
   
   // Tell Tact which parts to get 
   // of the sensor's signal spectrum.
@@ -75,9 +80,9 @@ void tactEvent(TactEvent e) {
   String row = s.time + "," + s.bias() + "," + s.peak();
   buffer = append(buffer, row);
   
-  // If there are more than 20 
+  // If there are more than 50 
   // records inside the buffer...
-  if (buffer.length > 180) {
+  if (buffer.length > 50) {
     // Save them!
     writeToFile();
   }
