@@ -66,9 +66,8 @@ void setup() {
   tact.start(5);
   
   timeZone = TimeZone.getDefault();
-  isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+  isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
   isoDateFormat.setTimeZone( timeZone );
-  isoDateFormat.format( new Date() );
 }
 
 void draw() {
@@ -80,7 +79,7 @@ void draw() {
   // Draw text sketch-centred
   textSize(110);
   textAlign(CENTER);
-  text (text, width /2, height /2 - 55);
+  text (text, width /2, height /2 - 55); 
 }
 
 /* Everytime there is fresh data from one of 
@@ -91,7 +90,8 @@ void tactEvent(TactEvent e) {
   TactSpectrum s = e.sensor.latestSpectrum();
   // Put together the fresh CSV row and store 
   // it inside the buffer, until we've collected enough
-  String row = s.time + "," + s.bias() + "," + s.peak();
+  String dateString = isoDateFormat.format( new Date() );
+  String row = dateString + "," + s.bias() + "," + s.peak();
   buffer = append(buffer, row);
   
   // If there are more than 50 
