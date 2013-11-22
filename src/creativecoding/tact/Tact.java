@@ -381,22 +381,37 @@ public class Tact {
 				if (sensors.size () == 0)
 					return;
 				
-				while (serial.available () > 0) {
+				for (int i=0; i < sensors.size (); i++) {
 					
-					int b = serial.read();
+					// Request values
+					serial.write ('g');
+					serial.write (Integer.toString (i));
+					serial.write (';');
+					serial.write (Integer.toString (spectrumStart));
+					serial.write (';');
+					serial.write (Integer.toString (spectrumLength));
+					serial.write (';');
+					serial.write (Integer.toString (1));
+					serial.write (';');
+					serial.write (10);
 					
-					if(firstByte) {
-						buffer = b;
-						firstByte = false;
-					}else{ 
-						buffer += b << 8;
-						// Do something neat with
-						// incoming value
-						parseMessage(buffer);
-					    
-						// Rest byte-buffer
-						buffer = 0;
-						firstByte = true;
+					while (serial.available () > 0) {
+						
+						int b = serial.read();
+						
+						if(firstByte) {
+							buffer = b;
+							firstByte = false;
+						}else{ 
+							buffer += b << 8;
+							// Do something neat with
+							// incoming value
+							parseMessage(buffer);
+						    
+							// Rest byte-buffer
+							buffer = 0;
+							firstByte = true;
+						}
 					}
 				}
 				
@@ -406,11 +421,6 @@ public class Tact {
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
 				}
-				
-				// Request values
-				serial.write ('g');
-				serial.write ('n');
-				serial.write (10);
 			}
 		}
 	}
