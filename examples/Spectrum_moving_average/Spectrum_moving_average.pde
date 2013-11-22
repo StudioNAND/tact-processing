@@ -21,13 +21,9 @@ void setup () {
   // store the last 31 signals + the current.
   tact = new Tact (this, 32);
   
-  // Tell Tact which parts to get 
-  // of the sensor's signal spectrum.
-  tact.spectrumStart(40);
-  tact.spectrumLength(32);
-  
-  // Register a sensor
-  sensor = tact.addSensor ("myTact-A");
+  // Create a Tact sensor and tell it which parts 
+  // to get of the sensor's signal spectrum.
+  sensor = tact.addSensor("myTact-A", 44, 32);
   
   // Start listening on serial port 5
   tact.start (5);

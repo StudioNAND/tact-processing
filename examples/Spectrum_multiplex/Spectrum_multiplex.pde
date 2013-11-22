@@ -27,11 +27,6 @@ void setup() {
   // Init Tact sensor
   tact = new Tact (this);
   
-  // Tell Tact which parts to get 
-  // of the sensor's signal spectrum.
-  tact.spectrumStart (80);
-  tact.spectrumLength (32);
-  
   // Array to store sensor inputs
   sensors = new TactSensor[sensorNum];
   

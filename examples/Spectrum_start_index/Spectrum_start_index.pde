@@ -18,13 +18,9 @@ void setup () {
   // Init Tact sensor
   tact = new Tact (this);
   
-  // Tell Tact which parts to get 
-  // of the sensor's signal spectrum.
-  tact.spectrumStart(48);
-  tact.spectrumLength(32);
-  
-  // Registers a new sensor
-  sensor = tact.addSensor ("myTact-A");
+  // Create a Tact sensor and tell it which parts 
+  // to get of the sensor's signal spectrum.
+  sensor = tact.addSensor("myTact-A", 44, 32);
   
   // Start listening on serial port 5
   tact.start (5);

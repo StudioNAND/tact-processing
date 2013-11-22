@@ -62,7 +62,7 @@ public class Tact {
 	
 	private boolean running = false;
 	
-	public int sleep = 10;
+	public int sleep = 2;
 	
 	/**
 	 * Tact serial update thread.
@@ -311,61 +311,6 @@ public class Tact {
 	 */
 	public synchronized void removeTactListener (TactListener o) {
 		listeners.remove (o);
-	}
-	
-	/**
-	 * Sets new signal spectrum start.
-	 * @param start new start for all signal spectrum.
-	 * @since 0.1
-	 */
-	public void spectrumStart(int start) {
-		spectrumStart = start;
-		if (serial != null) {
-			serial.write ('s'); // s = setter
-			serial.write ('s'); // command
-			serial.write (Integer.toString (spectrumStart)); // start value
-			serial.write (';');  // end of value
-			serial.write (10); // byte 10 = end of line
-		}
-	}
-	
-	/**
-	 * Sets new signal spectrum length.
-	 * @param length new length for all signal spectrum.
-	 * @since 0.1
-	 */
-	public void spectrumLength(int length) {
-		if (isPowerOfTwo (length)) {
-			spectrumLength = length;
-			if (serial != null) {
-				serial.write('s'); // s = setter
-				serial.write('a'); // command
-				serial.write(Integer.toString(spectrumLength)); // length of array
-				serial.write(';');  // end of value
-				serial.write(10); // byte 10 = end of line
-			}
-		}else{
-			System.err.println ("Can't use spectrumLength() with a non power-of-two value. Make sure that it follows the concept of 2, 4, 8, 16, 32, .., 128 etc.");
-		}
-	}
-	
-	/**
-	 * Start of the signal spectra.
-	 * @return start index 
-	 * @since 0.1
-	 */
-	public int spectrumStart () {
-		return spectrumStart;
-	}
-	
-	/**
-	 * Length of the signal spectra.
-	 * @return number of elements in the signal spectrum 
-	 *         as <code>int</code>.
-	 * @since 0.1
-	 */
-	public int spectrumLength () {
-		return bufferTemp.length;
 	}
 	
 	/**

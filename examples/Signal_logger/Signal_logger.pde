@@ -43,13 +43,9 @@ void setup() {
   // each update cycle.
   tact.sleep = 70;
   
-  // Tell Tact which parts to get 
-  // of the sensor's signal spectrum.
-  tact.spectrumStart (44);
-  tact.spectrumLength (32);
-  
-  // Create a Tact sensor
-  sensor = tact.addSensor("myTact-A");
+  // Create a Tact sensor and tell it which parts 
+  // to get of the sensor's signal spectrum.
+  sensor = tact.addSensor("myTact-A", 44, 32);
   
   // Create the empty CSV document 
   // (existing once will be replaced)
