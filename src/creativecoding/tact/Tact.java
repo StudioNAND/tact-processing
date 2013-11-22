@@ -62,7 +62,7 @@ public class Tact {
 	
 	private boolean running = false;
 	
-	public int sleep = 2;
+	public int sleep = 10;
 	
 	/**
 	 * Tact serial update thread.
@@ -148,12 +148,9 @@ public class Tact {
 			
 			// Initiate Serial connection
 			serial = new Serial (parent, Serial.list ()[serialIndex], baudrate);
+			// First of all, clear the port.
+			serial.clear ();
 			
-			// Set intial spectrum start 
-			// and stop index (length)
-			spectrumStart (spectrumStart);
-			spectrumLength (spectrumLength);
-						
 			running = true;
 			
 			thread = new Thread (new TactUpdateThread ());
@@ -180,7 +177,25 @@ public class Tact {
 	 * @since 0.1
 	 */
 	public TactSensor addSensor(String name) {
-		TactSensor s = new TactSensor (name, this.bufferStripNum, spectrumStart, spectrumLength);
+		TactSensor s = new TactSensor (name);
+		sensors.add (s);
+		return s;
+	}
+	
+	public TactSensor addSensor (String name, int start, int length) {
+		TactSensor s = new TactSensor (name, start, length);
+		sensors.add (s);
+		return s;
+	}
+	
+	public TactSensor addSensor (String name, int start, int length, int step) {
+		TactSensor s = new TactSensor (name, start, length, step);
+		sensors.add (s);
+		return s;
+	}
+	
+	public TactSensor addSensor (String name, int start, int length, int step, int bufferSize) {
+		TactSensor s = new TactSensor (name, start, length, step, bufferSize);
 		sensors.add (s);
 		return s;
 	}
@@ -387,11 +402,11 @@ public class Tact {
 					serial.write ('g');
 					serial.write (Integer.toString (i));
 					serial.write (';');
-					serial.write (Integer.toString (spectrumStart));
+					serial.write (Integer.toString (sensors.get (i).start ()));
 					serial.write (';');
-					serial.write (Integer.toString (spectrumLength));
+					serial.write (Integer.toString (sensors.get (i).readings ()));
 					serial.write (';');
-					serial.write (Integer.toString (1));
+					serial.write (Integer.toString (sensors.get (i).step ()));
 					serial.write (';');
 					serial.write (10);
 					
@@ -399,7 +414,7 @@ public class Tact {
 						
 						int b = serial.read();
 						
-						if(firstByte) {
+						if (firstByte) {
 							buffer = b;
 							firstByte = false;
 						}else{ 

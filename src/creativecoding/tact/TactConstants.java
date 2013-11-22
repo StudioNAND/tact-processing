@@ -34,4 +34,9 @@ public interface TactConstants {
 	 * Constant for the <code>TactSpectrum</code> signal maximum.
 	 */
 	public static final float AMPLITUDE_MAX = 1024;
+	
+	public static final int DEFAULT_SPECTRUM_BUFFER_SIZE = 8;
+	public static final int DEFAULT_SPECTRUM_READINGS = 32;
+	public static final int DEFAULT_SPECTRUM_START = 32;
+	public static final int DEFAULT_SPECTRUM_STEP = 1;
 }

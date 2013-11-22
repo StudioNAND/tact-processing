@@ -30,13 +30,17 @@ import creativecoding.tact.TactConstants;
  * @see Tact#addSensor(String)
  * @since 0.1
  */
-public class TactSensor {
+public class TactSensor implements TactConstants {
 	
 	/**
 	 * @exclude
 	 * Readable identifier as <code>String</code>.
 	 */
 	private String name;
+	
+	private int readings;
+	private int start;
+	private int step;
 	
 	public TactSpectrum[] buffer;
 	
@@ -47,13 +51,19 @@ public class TactSensor {
 	 * Creates a Tact sensor instance.
 	 * 
 	 * @param name readable idendifier as <code>String</code>.
+	 * @param start of the signal spectrum.
+	 * @param readings of the signal spectrum.
+	 * @param step number of signal measures after each a reading 
+	 *             is taken from the sensor's signal spectrum
 	 * @param bufferSize size of the <code>TactSpectrum</code> buffer.
-	 * @param spectrumStart start of the signal spectrum.
-	 * @param spectrumLength length of the signal spectrum.
 	 * @since 0.1
 	 */
-	public TactSensor (String name, int bufferSize, int spectrumStart, int spectrumLength) {
+	public TactSensor (String name, int start, int readings, int step, int bufferSize) {
 		this.name = name;
+		this.readings = readings;
+		this.start = start;
+		this.step = step;
+		
 		buffer = new TactSpectrum[bufferSize];
 		bias = new float[1024];
 		peak = new float[1024];
@@ -61,7 +71,43 @@ public class TactSensor {
 		Date date = new Date ();
 		
 		for (int i=0; i < bufferSize; i++)
-			buffer[i] = new TactSpectrum (date.getTime (), spectrumStart, spectrumLength);
+			buffer[i] = new TactSpectrum (date.getTime (), start, readings);
+	}
+	
+	/**
+	 * Creates a Tact sensor instance.
+	 * 
+	 * @param name readable identifier as <code>String</code>.
+	 * @param start of the signal spectrum.
+	 * @param readings of the signal spectrum.
+	 * @param step number of signal measures after each a reading 
+	 *             is taken from the sensor's signal spectrum
+	 * @since 0.1
+	 */
+	public TactSensor (String name, int start, int readings, int step) {
+		this (name, start, readings, step, TactConstants.DEFAULT_SPECTRUM_BUFFER_SIZE);
+	}
+	
+	/**
+	 * Creates a Tact sensor instance.
+	 * 
+	 * @param name readable identifier as <code>String</code>.
+	 * @param readings of the signal spectrum.
+	 * @param length of the signal spectrum.
+	 * @since 0.1
+	 */
+	public TactSensor (String name, int readings, int length) {
+		this (name, readings, length, DEFAULT_SPECTRUM_STEP);
+	}
+	
+	/**
+	 * Creates a Tact sensor instance.
+	 * 
+	 * @param name readable identifier as <code>String</code>.
+	 * @since 0.1
+	 */
+	public TactSensor (String name) {
+		this (name, DEFAULT_SPECTRUM_START, DEFAULT_SPECTRUM_READINGS);
 	}
 	
 	/**
@@ -242,5 +288,45 @@ public class TactSensor {
 	 */
 	public float[] bins (int resolution) {
 		return latestSpectrum ().bins (resolution);
+	}
+	
+	public int readings () {
+		return readings;
+	}
+	
+	public void readings (int readings) {
+		this.readings = readings;
+	}
+	
+	
+	/**
+	 * Start index of the delivered spectrum within the sensor 
+	 * signal. This value can be initially set when adding the 
+	 * sensor.
+	 * 
+	 * @return Index within the signal where first 
+	 *         measurement is taken as <code>int</code>.
+	 */
+	public int start () {
+		return start;
+	}
+	
+	/**
+	 * Sets the start index of the of the spectrum within
+	 * the sensor signal.
+	 * 
+	 * @param start Index within the signal where first 
+	 *        measurement is taken as <code>int</code>.
+	 */
+	public void start (int start) {
+		this.start = start;
+	}
+	
+	public int step () {
+		return step;
+	}
+	
+	public void step (int step) {
+		this.step = step;
 	}
 }
