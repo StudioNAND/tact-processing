@@ -99,6 +99,6 @@ void keyPressed () {
 
 // Stop and close the connection
 // to the Tact sensor
-void stop() {
+void exit() {
   tact.stop ();
 }
