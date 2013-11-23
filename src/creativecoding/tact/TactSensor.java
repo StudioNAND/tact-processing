@@ -290,14 +290,32 @@ public class TactSensor implements TactConstants {
 		return latestSpectrum ().bins (resolution);
 	}
 	
+	/**
+	 * Number of measurements taken from the sensor's signal 
+	 * spectrum. This value represents the amount of values that 
+	 * all <code>TactSpectrum</code> instances of this sensor in 
+	 * <code>buffer</code> can store; their <code>length()</code>.
+	 * 
+	 * @see TactSpectrum#length()
+	 * @return 0.1
+	 */
 	public int readings () {
 		return readings;
 	}
 	
+	/**
+	 * Sets the number of measurements (readings) taken from the 
+	 * signal of the sensor. The width of the read part results 
+	 * from this value times <code>step</code>, which represents 
+	 * the gap between the readings.
+	 * 
+	 * @param readings number of measurepoints taken from the 
+	 *                 signal as <code>int</code>.
+	 * @simce 0.1
+	 */
 	public void readings (int readings) {
 		this.readings = readings;
 	}
-	
 	
 	/**
 	 * Start index of the delivered spectrum within the sensor 
@@ -306,6 +324,7 @@ public class TactSensor implements TactConstants {
 	 * 
 	 * @return Index within the signal where first 
 	 *         measurement is taken as <code>int</code>.
+	 * @since 0.1
 	 */
 	public int start () {
 		return start;
@@ -317,15 +336,32 @@ public class TactSensor implements TactConstants {
 	 * 
 	 * @param start Index within the signal where first 
 	 *        measurement is taken as <code>int</code>.
+	 * @since 0.1
 	 */
 	public void start (int start) {
 		this.start = start;
 	}
 	
+	/**
+	 * Step size for which measurments are made. The value -1 
+	 * represents the number of units between all measure points.
+	 * 
+	 * @return Step-width for made measures as <code>int</code>.
+	 * @since 0.1
+	 */
 	public int step () {
 		return step;
 	}
 	
+	/**
+	 * Sets the step width between all measure points. A step 
+	 * width of 3 results in a gap of two measure units between 
+	 * the resulting values.
+	 * 
+	 * @param step number of measure units after which a 
+	 *             reading will be made.
+	 * @since 0.1
+	 */
 	public void step (int step) {
 		this.step = step;
 	}
