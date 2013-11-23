@@ -43,18 +43,10 @@ public class Tact {
 	 * Constant for the default baud rate.
 	 */
 	public static final int BAUD_RATE = 115200;
-	/**
-	 * Constant for the default <code>buffer</code> size.
-	 */
-	public static final int BUFFER_SIZE = 3;
 	
 	private ArrayList<TactListener> listeners = new ArrayList<TactListener> ();
 	
-	private int spectrumStart = 40;
-	private int spectrumLength = 32;
-	
 	private int buffer = 0;
-	private int bufferStripNum;
 	private boolean firstByte = true;
 	
 	private int sensorIndex = 0;
@@ -81,31 +73,16 @@ public class Tact {
 	PApplet parent;
 	Serial serial;
 	
-	
-	/**
-	 * Tact core 
-	 * 
-	 * <code>Tact tact = new Tact(this);</code>
-	 * 
-	 * @param parent reference to the main sketch instantiation
-	 */
-	public Tact (PApplet parent) {
-		this (parent, BUFFER_SIZE);
-	}
-	
 	/**
 	 * Tact core 
 	 * 
 	 * <code>Tact tact = new Tact(this, 5);</code>
 	 * 
 	 * @param parent reference to the main sketch instantiation
-	 * @param bufferSize Number of previous sensor buffer sets 
-	 *                   that each SensorBuffer will hold as history.
 	 * @since 0.1
 	 */
-	public Tact (PApplet parent, int bufferSize) {
+	public Tact (PApplet parent) {
 		this.parent = parent;
-		this.bufferStripNum = bufferSize;
 		sensors = new ArrayList<TactSensor>();
 		
 		try {
@@ -239,7 +216,7 @@ public class Tact {
 			// Finish filling up value array by copying 
 			// temp version into the processable counterpart.
 			// A wrapped signal - the TactSpectrum
-			TactSpectrum spectrum = new TactSpectrum (parent.millis (), bufferTemp.clone (), spectrumStart);
+			TactSpectrum spectrum = new TactSpectrum (parent.millis (), bufferTemp.clone (), sensors.get (sensorIndex).start ());
 			
 			try {
 				// Update the designated sensor instance
