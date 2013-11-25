@@ -350,13 +350,13 @@ public class Tact {
 							firstByte = true;
 						}
 					}
-				}
-				
-				// Get some rest...
-				try {
-					Thread.sleep (sleep);
-				} catch (InterruptedException e) {
-					Thread.currentThread().interrupt();
+					
+					// Get some rest...
+					try {
+						Thread.sleep (sleep);
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+					}
 				}
 			}
 		}
