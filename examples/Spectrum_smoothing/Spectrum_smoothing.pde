@@ -18,7 +18,7 @@ void setup () {
   textSize (13);
   
   // Init Tact sensor
-  tact = new Tact (this, 64);
+  tact = new Tact (this);
   // Registers a new sensor
   sensor = tact.addSensor ("myTact-A");
   // Start listening on serial port 5

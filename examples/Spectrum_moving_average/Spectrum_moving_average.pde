@@ -16,10 +16,8 @@ void setup () {
   size (800, 600);
   noFill ();
   
-  // Init Tact toolkit with a buffer size 
-  // of 32 spectra. That means that tact will 
-  // store the last 31 signals + the current.
-  tact = new Tact (this, 32);
+  // Init Tact toolkit
+  tact = new Tact (this);
   
   // Create a Tact sensor and tell it which parts 
   // to get of the sensor's signal spectrum.
