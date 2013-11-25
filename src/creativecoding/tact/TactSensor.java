@@ -92,12 +92,12 @@ public class TactSensor implements TactConstants {
 	 * Creates a Tact sensor instance.
 	 * 
 	 * @param name readable identifier as <code>String</code>.
-	 * @param readings of the signal spectrum.
-	 * @param length of the signal spectrum.
+	 * @param start of the signal spectrum.
+	 * @param readings number of signal spectrum measure points.
 	 * @since 0.1
 	 */
-	public TactSensor (String name, int readings, int length) {
-		this (name, readings, length, DEFAULT_SPECTRUM_STEP);
+	public TactSensor (String name, int start, int readings) {
+		this (name, start, readings, DEFAULT_SPECTRUM_STEP);
 	}
 	
 	/**
