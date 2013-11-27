@@ -14,11 +14,6 @@ int sensorNum = 3;
 Tact tact;
 TactSensor[] sensors;
 
-// Min and maxima of bias values 
-// that have been measured so far.
-float biasMin = Float.MAX_VALUE;
-float biasMax = Float.MIN_VALUE;
-
 void setup() {
   
   size (1024, 600);
@@ -54,7 +49,7 @@ void draw() {
     
     // Define red value, controlled by the current 
     // bias of "sensor", one of the inputs
-    int red = int (map (mav.bias(), sensor.minBias(), sensor.maxBias(), 100, 155));
+    int red = int (map (mav.peak(), sensor.minPeak(), sensor.maxPeak(), 255, 155));
     
     // Draw red rectangle and fill
     // it with 
@@ -63,7 +58,7 @@ void draw() {
     rect (barWidth * i, 0, barWidth, height);
     
     // Grab sensor signal spectrum
-    float[] values = mav.values;
+    float[] values = mav.smooth();
     
     // Draw signal-spectrum as graph
     // on top of the red rectangle. 
