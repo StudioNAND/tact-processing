@@ -48,6 +48,25 @@ public class TactSensor implements TactConstants {
 	public float[] peak;
 	
 	/**
+	 * Minimum bias value measured so far.
+	 */
+	private float biasMin = Float.MAX_VALUE;
+	/**
+	 * Maximum peak value measured so far.
+	 */
+	private float biasMax = Float.MIN_VALUE;
+	
+	/**
+	 * Minimum peak value measured so far.
+	 */
+	private float peakMin = Float.MAX_VALUE;
+	/**
+	 * Maximum peak value measured so far.
+	 */
+	private float peakMax = Float.MIN_VALUE;
+	
+	
+	/**
 	 * Creates a Tact sensor instance.
 	 * 
 	 * @param name readable idendifier as <code>String</code>.
@@ -85,7 +104,7 @@ public class TactSensor implements TactConstants {
 	 * @since 0.1
 	 */
 	public TactSensor (String name, int start, int readings, int step) {
-		this (name, start, readings, step, TactConstants.DEFAULT_SPECTRUM_BUFFER_SIZE);
+		this (name, start, readings, step, DEFAULT_SPECTRUM_BUFFER_SIZE);
 	}
 	
 	/**
@@ -144,6 +163,18 @@ public class TactSensor implements TactConstants {
 			bias[i-1] = bias[i];
 		// Add present buffer-bias
 		bias[bias.length - 1] = b.bias ();
+		
+		if (biasMax < b.bias ())
+			biasMax = b.bias ();
+		
+		if (biasMin > b.bias ())
+			biasMin = b.bias ();
+		
+		if (peakMax < b.peak ())
+			peakMax = b.peak ();
+		
+		if (peakMin > b.peak ())
+			peakMin = b.peak ();
 		
 		// Shift exisitng peak histogram
 		for (int i=1; i < peak.length; i++)
@@ -275,7 +306,7 @@ public class TactSensor implements TactConstants {
 	 * @since 0.1
 	 */
 	public float peak () {
-		return (float) latestSpectrum().max() / TactConstants.AMPLITUDE_MAX;
+		return (float) latestSpectrum().max() / AMPLITUDE_MAX;
 	}
 	
 	/**
@@ -288,6 +319,66 @@ public class TactSensor implements TactConstants {
 	 */
 	public float[] bins (int resolution) {
 		return latestSpectrum ().bins (resolution);
+	}
+	
+	/**
+	 * Maximum bias value that has been measured so far. This 
+	 * value will be <code>Float.MIN_VALUE</code> if no signal 
+	 * has been received yet. Use <code>resetBias()</code> to 
+	 * reset this constrain.
+	 * 
+	 * @return maximum bias value measured so far as <code>float</code>.
+	 * @see #minBias()
+	 * @see #resetBias()
+	 * @since 0.1
+	 */
+	public float maxBias () {
+		return biasMax;
+	}
+	
+	/**
+	 * Maximum peak value that has been measured so far. This 
+	 * value will be <code>Float.MIN_VALUE</code> if no singal 
+	 * has been received yet. Use <code>resetPeak()</code> to 
+	 * reset this constrain.
+	 * 
+	 * @return maximum peak value measured so far as <code>float</code>.
+	 * @see #minPeak()
+	 * @see #resetPeak()
+	 * @since 0.1
+	 */
+	public float maxPeak () {
+		return peakMax;
+	}
+	
+	/**
+	 * Minimum bias value that has been measured so far. This 
+	 * value will be <code>Float.MAX_VALUE</code> if no signal 
+	 * has been received yet. Use <code>resetBias()</code> to 
+	 * reset this constrain.
+	 * 
+	 * @return minimum bias value measured so far as <code>float</code>.
+	 * @see #maxBias()
+	 * @see #resetBias()
+	 * @ince 0.1
+	 */
+	public float minBias () {
+		return biasMin;
+	}
+	
+	/**
+	 * Minimum peak value that has been measured so far. This 
+	 * value will be <code>Float.MAX_VALUE</code> if no signal 
+	 * has been received yet. Use <code>resetPeak()</code> to 
+	 * reset this constrain.
+	 * 
+	 * @return minimum peak value measured so far as <code>float</code>.
+	 * @see #maxPeak()
+	 * @see #resetPeak()
+	 * @since 0.1
+	 */
+	public float minPeak () {
+		return peakMin;
 	}
 	
 	/**
@@ -364,5 +455,36 @@ public class TactSensor implements TactConstants {
 	 */
 	public void step (int step) {
 		this.step = step;
+	}
+	
+	/**
+	 * Resets <code>bias()</code> min and max values. Thoses are 
+	 * constantly checked and as the case maybe updated. This functions 
+	 * allows to reset those constrains by assigning <code>
+	 * Float.MAX_VALUE</code> to <code>minBias()</code> and 
+	 * vice versa.
+	 * 
+	 * @see #minBias()
+	 * @see #maxBias()
+	 * @since 0.1
+	 */
+	public void resetBias () {
+		biasMax = Float.MIN_VALUE;
+		biasMin = Float.MAX_VALUE;
+	}
+	
+	/**
+	 * Resets <code>peak()</code> min and max values. Those are 
+	 * constantly checked and as the case maybe updated. This function 
+	 * allows to reset those constrains by assigning <code>
+	 * Float.MAX_VALUE</code> to <code>minPeak()</code> and vice versa.
+	 * 
+	 * @see #minPeak()
+	 * @see #maxPeak()
+	 * @since 0.1
+	 */
+	public void resetPeak () {
+		peakMax = Float.MIN_VALUE;
+		peakMin = Float.MAX_VALUE;
 	}
 }
