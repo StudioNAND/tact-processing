@@ -33,7 +33,7 @@ void setup() {
   // For each of those inputs
   for (int i=0; i < sensorNum; i++) {
     // Initialize sensor
-    sensors[i] = tact.addSensor ("myTact-" + i);
+    sensors[i] = tact.addSensor ("myTact-" + i, 48, 32, 2);
   }
   
   // Start listening on serial port 5
@@ -50,17 +50,11 @@ void draw() {
     
     // Grab sensor from list at index "i"
     TactSensor sensor = sensors[i];
-    
-    // Update min and max value based to adjust
-    // spectrum boundaries for optimal mapping
-    if (sensor.bias() < biasMin)
-      biasMin = sensor.bias();
-    if (sensor.bias() > biasMax)
-      biasMax = sensor.bias();
+    TactSpectrum mav = sensor.movingAverage();
     
     // Define red value, controlled by the current 
     // bias of "sensor", one of the inputs
-    int red = int (map (sensor.bias(), biasMin, biasMax, 0, 255));
+    int red = int (map (mav.bias(), sensor.minBias(), sensor.maxBias(), 100, 155));
     
     // Draw red rectangle and fill
     // it with 
@@ -69,7 +63,7 @@ void draw() {
     rect (barWidth * i, 0, barWidth, height);
     
     // Grab sensor signal spectrum
-    float[] values = sensor.latestValues();
+    float[] values = mav.values;
     
     // Draw signal-spectrum as graph
     // on top of the red rectangle. 
