@@ -44,7 +44,7 @@ void draw () {
   // For each value...
   for (int i=0; i < values.length; i++) {
     // Add vertex to line shape
-    vertex (i * xstep, values[i] * ystep);
+    vertex (i * xstep, height - values[i] * ystep);
   }
   // End drawing line
   endShape ();

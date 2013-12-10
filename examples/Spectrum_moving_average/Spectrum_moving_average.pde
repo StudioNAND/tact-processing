@@ -56,7 +56,7 @@ void drawGraph (float[] values) {
   // For every data point in the list ...
   for (int i=0; i < values.length; i++) {
     // Add new vertex to line shape
-    vertex (i * xstep, values[i] * (height / 1024f));
+    vertex (i * xstep, height - values[i] * (height / 1024f));
   }
   // End drawing the line
   endShape ();

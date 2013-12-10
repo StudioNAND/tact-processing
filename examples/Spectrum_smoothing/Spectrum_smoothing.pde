@@ -20,7 +20,7 @@ void setup () {
   // Init Tact sensor
   tact = new Tact (this);
   // Registers a new sensor
-  sensor = tact.addSensor ("myTact-A");
+  sensor = tact.addSensor ("myTact-A", 48, 32, 1, 28);
   // Start listening on serial port 5
   tact.start (5);
 }
@@ -63,7 +63,7 @@ void drawGraph (float[] values, float yGraph, float heightGraph) {
   // For every data point in the list ...
   for (int i=0; i < values.length; i++) {
     // Add new vertex to line shape
-    vertex (i * xstep, yGraph + values[i] * (heightGraph / 1024f));
+    vertex (i * xstep, yGraph + (heightGraph - values[i] * (heightGraph / 1024f)));
   }
   // End drawing the line
   endShape ();

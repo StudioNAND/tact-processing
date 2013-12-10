@@ -50,7 +50,7 @@ void draw () {
   // For each value...
   for (int i=0; i < values.length; i++) {
     // Add vertex to line shape
-    vertex (i * xstep, values[i] * ystep);
+    vertex (i * xstep, height - values[i] * ystep);
   }
   // End drawing line
   endShape ();
@@ -61,18 +61,20 @@ void draw () {
 void keyPressed () {
   // Figure out which current start 
   // index the tact sensor delivers
-  int start = tact.spectrumStart();
+  int start = sensor.start();
   
   // Check if left arrow key was pressed,
   // and present index is bigger than 0
   if (keyCode == LEFT && start > 0) {
     // Reduce index by 1
-    tact.spectrumStart(start - 1);
+    sensor.start(start - 1);
   }
   // Same for the right arrow key
   if (keyCode == RIGHT && start < 128) {
-    tact.spectrumStart(start + 1);
+    sensor.start(start + 1);
   }
+  
+  println("Starting now at " + sensor.start());
 }
 
 // Stop Tact Serial communication

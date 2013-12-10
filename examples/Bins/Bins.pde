@@ -77,7 +77,7 @@ void draw() {
       float xstep = width / float (values.length - 1);
       float ystep = height / 1024f;
       // Place the vertex
-      vertex(i * xstep, ystep * values[i]);
+      vertex(i * xstep, height - ystep * values[i]);
     }
     
     // Stop drawing the line when all 
