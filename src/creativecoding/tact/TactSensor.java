@@ -26,6 +26,16 @@ import creativecoding.tact.TactConstants;
 /**
  * <p>A <code>TactSensor</code> represents a top-level capacitive Tact sensor.</p>
  * 
+ * <p>The purpose of this class is to wrap a </p>
+ * 
+ * <p>The following instanciation creates a sensor instances that will deliver signal 
+ * spectra which start at 44 and contain 32 measure points with a step size of 2. 
+ * The sensor instance will also store the 64 most recent <code>TactSpectrum</code> 
+ * in its <code>buffer</code>.</p>
+ * <pre>
+ * TactSensor s = tact.addSensor("myTact-A", 44, 32, 2, 64);
+ * </pre>
+ * 
  * @author Steffen Fiedler, <a href="http://www.nand.io" target="_blank">www.nand.io</a>
  * @see Tact#addSensor(String)
  * @since 0.1
@@ -33,18 +43,67 @@ import creativecoding.tact.TactConstants;
 public class TactSensor implements TactConstants {
 	
 	/**
-	 * @exclude
 	 * Readable identifier as <code>String</code>.
 	 */
 	private String name;
 	
+	/**
+	 * Number of measures that will be made when 
+	 * retrieving the signal spectrum.
+	 * @see TactSpectrum#length()
+	 */
 	private int readings;
+	
+	/**
+	 * Signal spectrum start index.
+	 * @see TactSpectrum#start()
+	 */
 	private int start;
+	
+	/**
+	 * Signal spectrum step size. Number of units between 
+	 * the measure points within the signal spectrum.
+	 */
 	private int step;
 	
+	/**
+	 * List of previously received signal spectra. This buffer thereby 
+	 * stores <code>TactSpectrum</code> instances in chronological order. 
+	 * The latest is located at the end (length - 1).<br />
+	 * <pre>
+	 * TactSpectrum latest = sensor.buffer[sensor.length() - 1];
+	 * </pre>
+	 * The number of signal spectra that the buffer holds is defined by 
+	 * default through {@link TactConstants#DEFAULT_SPECTRUM_BUFFER_SIZE}, 
+	 * and can be modified when creating the sensor.
+	 * <pre>
+	 * // Creates a sensor with a buffer size of 64
+	 * tact.addSensor("mySensor-A", 44, 32, 2, 64);
+	 * </pre>
+	 * 
+	 * @see #length()
+	 * @since 0.1
+	 */
 	public TactSpectrum[] buffer;
 	
+	/**
+	 * Bias buffer storing the 1024 most recent values. 
+	 * Structured in chronological order is the latest 
+	 * value located at the end of the list.
+	 * 
+	 * @see #bias()
+	 * @since 0.1
+	 */
 	public float[] bias;
+	
+	/**
+	 * Peak buffer storing the 1024 most recent values. 
+	 * Structured in chronological order is the latest 
+	 * value located at the end of the list.
+	 * 
+	 * @see #peak()
+	 * @since 0.1
+	 */
 	public float[] peak;
 	
 	/**
@@ -90,7 +149,7 @@ public class TactSensor implements TactConstants {
 		Date date = new Date ();
 		
 		for (int i=0; i < bufferSize; i++)
-			buffer[i] = new TactSpectrum (date.getTime (), start, readings);
+			buffer[i] = new TactSpectrum (date.getTime (), start, readings, step);
 	}
 	
 	/**
@@ -211,7 +270,7 @@ public class TactSensor implements TactConstants {
 		for (int i=0; i < values.length; i++)
 			values[i] /= buffer.length;
 		
-		return new TactSpectrum (time / buffer.length, values, buffer[0].start ());
+		return new TactSpectrum (time / buffer.length, values, buffer[0].start (), buffer[0].step());
 	}
 	
 	/**

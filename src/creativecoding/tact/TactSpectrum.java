@@ -31,6 +31,7 @@ public class TactSpectrum {
 	
 	private int start;
 	private int end;
+	private int step;
 	
 	public float[] values;
 	public long time;
@@ -47,15 +48,16 @@ public class TactSpectrum {
 	 *               values
 	 * @param start
 	 */
-	public TactSpectrum (long time, float[] values, int start) {
+	public TactSpectrum (long time, float[] values, int start, int step) {
 		this.time = time;
 		this.values = values;
 		this.start = start;
-		end = start + values.length;
+		this.step = step;
+		end = start + values.length * step;
 	}
 	
-	public TactSpectrum (long time, int start, int length) {
-		this(time, new float[length], start);
+	public TactSpectrum (long time, int start, int length, int step) {
+		this(time, new float[length], start, step);
 	}
 	
 	public float max() {
@@ -84,6 +86,10 @@ public class TactSpectrum {
 	
 	public int end () {
 		return end;
+	}
+	
+	public int step () {
+		return step;
 	}
 	
 	public float bias () {

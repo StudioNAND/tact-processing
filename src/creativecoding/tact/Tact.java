@@ -216,7 +216,7 @@ public class Tact {
 			// Finish filling up value array by copying 
 			// temp version into the processable counterpart.
 			// A wrapped signal - the TactSpectrum
-			TactSpectrum spectrum = new TactSpectrum (parent.millis (), bufferTemp.clone (), sensors.get (sensorIndex).start ());
+			TactSpectrum spectrum = new TactSpectrum (parent.millis (), bufferTemp.clone (), sensors.get (sensorIndex).start (), sensors.get (sensorIndex).step ());
 			
 			try {
 				// Update the designated sensor instance
