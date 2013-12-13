@@ -24,41 +24,43 @@ import processing.core.PApplet;
 import processing.core.PGraphics;
 
 /**
+ * <p>A util class to render <code>Tact</code> data diagrams.</p>
+ * 
  * @author Steffen Fiedler, <a href="http://www.nand.io" target="_blank">www.nand.io</a>
  * @since 0.1
  */
 public class TactGraph {
 	
 	/**
-	 * Theme key signal graph stroke color.
+	 * Theme key for signal graph stroke color.
 	 */
 	public static final String THEME_GRAPH = "graph";
 	/**
-	 * Theme key axis guide stroke color. 
+	 * Theme key for axis guide stroke color. 
 	 */
 	public static final String THEME_AXIS_GUIDE = "axis-guide";
 	/**
-	 * Theme key axis helper stroke color.
+	 * Theme key for axis helper stroke color.
 	 */
 	public static final String THEME_AXIS_HELPER = "axis-helper";
 	/**
-	 * Theme key axis stroke color.
+	 * Theme key for axis stroke color.
 	 */
 	public static final String THEME_AXIS_LINE = "axis-line";
 	/**
-	 * Theme key axis label fill color.
+	 * Theme key for axis label fill color.
 	 */
 	public static final String THEME_AXIS_LABEL = "axis-label";
 	/**
-	 * Theme key axis marker stroke color.
+	 * Theme key for axis marker stroke color.
 	 */
 	public static final String THEME_AXIS_MARKER = "axis-marker";
 	/**
-	 * Theme key bin stroke color.
+	 * Theme key for bin stroke color.
 	 */
 	public static final String THEME_BIN_STROKE = "bin-stroke";
 	/**
-	 * Theme key bin fill color.
+	 * Theme key for bin fill color.
 	 */
 	public static final String THEME_BIN_FILL = "bin-fill";
 	
@@ -113,9 +115,15 @@ public class TactGraph {
 	 */
 	public float offsetY = 40;
 	
-	private boolean displayGuides = true;
+	/**
+	 * Flag for displaying background guides in graph area.
+	 */
+	public boolean displayGuides = true;
 	
-	private boolean displayAxis = true;
+	/**
+	 * Flag for showing and hiding diagram axes.
+	 */
+	public boolean displayAxis = true;
 	private int axisStrokeWeight = 1;
 	private float axisTextSize = 10;
 	
@@ -124,7 +132,18 @@ public class TactGraph {
 	
 	private int segmentStrokeWeight = 3;
 	
-	
+	/**
+	 * Creates a graph plotting helper instance. The aim of 
+	 * this class is to provide simple access to <code>TactSensor</code> 
+	 * related diagram drawing functionality.
+	 * 
+	 * @param parent Processing sketch instance
+	 * @param x diagram x position
+	 * @param y diagram y position
+	 * @param width diagram total width
+	 * @param height diagram total height
+	 * @since 0.1
+	 */
 	public TactGraph (PApplet parent, float x, float y, float width, float height) {
 		this.parent = parent;
 		this.x = x;
@@ -158,10 +177,26 @@ public class TactGraph {
 		}
 	}
 	
-	public void spectrum (TactSensor sensor, int segmentResoltion) {
+	/**
+	 * Renders <code>TactSpectrum</code> within the 
+	 * given diagram dimensions. Define a bin resolution 
+	 * for also plotting the signal in groups of n-bins, 
+	 * whereby n must be power of two; not exceeding the 
+	 * <code>length</code> of the <code>TactSpectrum</code>.
+	 * 
+	 * @param sensor sensor source for retrieving latest spectrum from
+	 * @param bins number of groups the signal shall be segmented into. 
+	 *             This value must be power of two and shall not exceede 
+	 *             the total amount of spectrum <code>values</code>.
+	 * @see TactSpectrum#values
+	 * @see TactSpectrum#bins(int)
+	 * @since 0.1
+	 */
+	public void spectrum (TactSensor sensor, int bins) {
 		
-		if (segmentResoltion > 0)
-			bins (new float[][] {sensor.latestSpectrum ().bins (segmentResoltion)}, TactConstants.AMPLITUDE_MIN, TactConstants.AMPLITUDE_MAX);
+		// Draw signal segmentation into n-bins 
+		if (bins > 0)
+			bins (new float[][] {sensor.latestSpectrum ().bins (bins)}, TactConstants.AMPLITUDE_MIN, TactConstants.AMPLITUDE_MAX);
 		
 		if (displayGuides)
 			drawGuides (new float[] {sensor.minBias (), sensor.maxBias ()}, new float[] {sensor.minPeak (), sensor.maxPeak ()});
@@ -172,26 +207,70 @@ public class TactGraph {
 			drawHelper(sensor);
 	}
 	
+	/**
+	 * Renders <code>TactSpectrum</code> within the given 
+	 * diagram dimension.
+	 * 
+	 * @param sensor source for retrieving latest spectrum from
+	 * @see TactSpectrum#values
+	 * @since 0.1
+	 */
 	public void spectrum (TactSensor sensor) {
 		spectrum (sensor, 0);
 	}
 	
+	/**
+	 * Renders <code>bias</code> histogram of a given 
+	 * <code>TactSpectrum</code>.
+	 * 
+	 * @param sensor sensor holding the array of chronological 
+	 *               <code>bias</code> values.
+	 * @see TactSensor#bias
+	 * @since 0.1
+	 */
 	public void bias (TactSensor sensor) {
 		if (displayGuides)
 			drawGuides (null, new float[] {sensor.minBias (), sensor.maxBias ()});
 		graph (sensor.bias, 0, sensor.bias.length, 0f, 1f);
 	}
 	
+	/**
+	 * Renders <code>preak</code> histogram of a given 
+	 * <code>TactSpectrum</code>.
+	 * 
+	 * @param sensor holding the array of chronological 
+	 *               <code>peak</code> values.
+	 * @see TactSensor#peak
+	 * @since 0.1
+	 */
 	public void peak (TactSensor sensor) {
 		if (displayGuides)
 			drawGuides (null, new float[] {sensor.minPeak (), sensor.maxPeak ()});
 		graph (sensor.peak, 0, sensor.peak.length, 0f, 1f);
 	}
 	
+	/**
+	 * Renders graph for given <code>values</code> set.
+	 * 
+	 * @param values list of single values to render.
+	 * @param xMin the minimum value on the x-axis.
+	 * @param xMax the maximum value on the x-axis.
+	 * @param yMin the minimum value on the y-axis.
+	 * @param yMax the maximum value on the y-axis.
+	 * @since 0.1
+	 */
 	public void graph (float[] values, float xMin, float xMax, float yMin, float yMax) {
 		graph (new float[][]{ values }, xMin, xMax, yMin, yMax);
 	}
 	
+	/**
+	 * Renders signal spectrum grouped into bins.
+	 * 
+	 * @param values of the graph that is to plot.
+	 * @param yMin the minimum value on the y-axis.
+	 * @param yMax the maximum value on the y-axis.
+	 * @since 0.1
+	 */
 	public void bins (float[][] values, float yMin, float yMax) {
 		
 		if (values.length < 1)
@@ -226,6 +305,16 @@ public class TactGraph {
 		}
 	}
 	
+	/**
+	 * Render signal spctrum as graph.
+	 * 
+	 * @param values 
+	 * @param xMin
+	 * @param xMax
+	 * @param yMin
+	 * @param yMax
+	 * @since 0.1
+	 */
 	public void graph (float[][] values, float xMin, float xMax, float yMin, float yMax) {
 		
 		if (displayAxis)
@@ -247,6 +336,13 @@ public class TactGraph {
 		}
 	}
 	
+	/**
+	 * Render guide as lines in diagram background.
+	 * 
+	 * @param xvalues list of positions on the x-axis.
+	 * @param yvalues list of positions on the y-axis.
+	 * @since 0.1
+	 */
 	private void drawGuides (float[] xvalues, float[] yvalues) {
 		
 		parent.g.stroke (theme.get (THEME_AXIS_GUIDE));
@@ -292,6 +388,15 @@ public class TactGraph {
 		}
 	}
 	
+	/**
+	 * Render diagram x and y axis.
+	 * 
+	 * @param xMin the minimum value on the x-axis.
+	 * @param xMax the maximum value on the x-axis.
+	 * @param yMin the minimum value on the y-axis.
+	 * @param yMax the maximum value on the y-axis.
+	 * @sine 0.1
+	 */
 	private void drawAxis (float xMin, float xMax, float yMin, float yMax) {
 		
 		parent.g.stroke (theme.get (THEME_AXIS_LINE));

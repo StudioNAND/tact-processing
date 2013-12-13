@@ -22,7 +22,6 @@ import creativecoding.tact.TactConstants;
 
 /**
  * <p>A <code>TactSpectrum</code> wraps a Tact sensor signal in an obeject.</p>
- * <p>A <code>TactSpectrum</code> is a snapshot of a ...</p>
  * 
  * @author Steffen Fiedler, <a href="http://www.nand.io" target="_blank">www.nand.io</a>
  * @since 0.1
