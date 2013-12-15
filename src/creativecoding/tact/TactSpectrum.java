@@ -28,11 +28,30 @@ import creativecoding.tact.TactConstants;
  */
 public class TactSpectrum {
 	
+	/**
+	 * Start index of signal spectrum readinds.
+	 */
 	private int start;
+	/**
+	 * End index of signal spectrum readings.
+	 */
 	private int end;
+	/**
+	 * Step width between signal spectrum readinds.
+	 */
 	private int step;
 	
+	/**
+	 * Signal spectrum values. These are the core values that represent 
+	 * the sensor reading. The first one at [0] references to the 
+	 * <code>start</code> index within the spectrum, whereas the following 
+	 * ones are measured with an interval of <code>step</code>.
+	 */
 	public float[] values;
+	
+	/**
+	 * Timestamp when signal was received.
+	 */
 	public long time;
 	
 	/**
@@ -59,6 +78,12 @@ public class TactSpectrum {
 		this(time, new float[length], start, step);
 	}
 	
+	/**
+	 * Signal maxima in <code>values</code> list.
+	 * 
+	 * @return absolute value for maxima in spectrum.
+	 * @since 0.1
+	 */
 	public float max() {
 		float max = values[0];
 		for (int i=1; i < values.length; i++)
@@ -67,6 +92,12 @@ public class TactSpectrum {
 		return max;
 	}
 	
+	/**
+	 * Signal minima in <code>values</code> list.
+	 * 
+	 * @return absolut value for minimum in spectrum.
+	 * @since 0.1
+	 */
 	public float min() {
 		float min = values[0];
 		for (int i=1; i < values.length; i++)
@@ -75,14 +106,39 @@ public class TactSpectrum {
 		return min;
 	}
 	
+	/**
+	 * Size of the represented signal spectrum.
+	 * 
+	 * @return 
+	 * @see #values
+	 * @since 0.1
+	 */
 	public int length () {
 		return values.length;
 	}
 	
+	/**
+	 * Start index where measurments are taken from sensor signal. 
+	 * This attribute is defined on instantiation and can not be modified.
+	 * 
+	 * @return Start index within signal spectrum 
+	 *         where <code>values</code> are taken 
+	 *         from as <code>int</code>.
+	 * @since 0.1
+	 */
 	public int start () {
 		return start;
 	}
 	
+	/**
+	 * End index where measurements are taken from sensor signal. 
+	 * This attribute is defined on instantiation and can not be modified.
+	 * 
+	 * @return End index within signal spectrum where 
+	 *         <code>values</code> are taken from as 
+	 *         <code>int</code>.
+	 * @since 0.1
+	 */
 	public int end () {
 		return end;
 	}
@@ -99,6 +155,17 @@ public class TactSpectrum {
 		return max () / TactConstants.AMPLITUDE_MAX;
 	}
 	
+	/**
+	 * Spectrum index where signal maximum is present. This index 
+	 * referes to the location of the value within the 
+	 * <code>values</code> array. To determine the absolute signal 
+	 * index: add <code>maxAt()</code> times <code>step</code> to 
+	 * the <code>start</code> index.
+	 * 
+	 * @return Position of the signal maximum within the 
+	 *         <code>values</code> array as <code>int</code>.
+	 * @since 0.1
+	 */
 	public int maxAt () {
 		int index = 0;
 		float max = values[index];
@@ -111,6 +178,20 @@ public class TactSpectrum {
 		return index;
 	}
 	
+	/**
+	 * Spectrum index where signal minimum is present. 
+	 * This index refers to the location of the value within 
+	 * the <code>values</code> array. To determine the absolte 
+	 * signal index: add <code>minAt()</code> times <code>step
+	 * </code> to the <code>start</code> index.
+	 * <pre>
+	 * int sigMinIndex = start + minAt() * step;
+	 * </pre>
+	 * 
+	 * @return Position of the signal minimum within the 
+	 *         <code>values</code> array as <code>int</code>.
+	 * @since 0.1
+	 */
 	public int minAt () {
 		int index = 0;
 		float min = values[index];
@@ -138,6 +219,18 @@ public class TactSpectrum {
 		return smooth;
 	}
 	
+	/**
+	 * Groups signal spectrum into bins. The number of 
+	 * bins must be power of two and shall not exceede 
+	 * the number of actual <code>values</code>.
+	 * 
+	 * @param resolution number of groups. Power of two 
+	 *        integer value; not exceeding spectrum 
+	 *        <code>values</code> length.
+	 * @return signal spectrum grouped into bins as list 
+	 *         of <code>float</code> values.
+	 * @since 0.1
+	 */
 	public float[] bins (int resolution) {
 		// Check if resolution is pow2-valid
 		if (Tact.isPowerOfTwo (resolution)) {
