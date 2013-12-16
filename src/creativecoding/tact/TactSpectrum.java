@@ -57,14 +57,14 @@ public class TactSpectrum {
 	/**
 	 * Creates a new <code>TactSpectrum</code> instance. This 
 	 * will hold a Tact value set (signal spectrum) which has 
-	 * been received at a specific point in time.<br />
-	 * <br />
+	 * been received at a specific point in time.
 	 * 
 	 * @param time the point in time when the value set has been 
 	 *             received/recorded as <code>long</code> (UNIX stamp).
-	 * @param values the Tact signal as an array of <code>float</code> 
-	 *               values
-	 * @param start
+	 * @param values of signal as <code>float</code> array .
+	 * @param start index where measures have been taken from.
+	 * @param step width between signal values.
+	 * @since 0.1
 	 */
 	public TactSpectrum (long time, float[] values, int start, int step) {
 		this.time = time;
@@ -74,6 +74,18 @@ public class TactSpectrum {
 		end = start + values.length * step;
 	}
 	
+	/**
+	 * Creates a new <code>TactSpectrum</code> instance. This 
+	 * will hold a Tact value set (signal spectrum) which has 
+	 * been received at a specific point in time.
+	 * 
+	 * @param time when the value set has been received/recorded 
+	 *        as <code>long</code> (UNIX stamp).
+	 * @param start index where measures have been taken from.
+	 * @param length total number of measures.
+	 * @param step width between signal values.
+	 * @since 0.1
+	 */
 	public TactSpectrum (long time, int start, int length, int step) {
 		this(time, new float[length], start, step);
 	}
@@ -143,14 +155,32 @@ public class TactSpectrum {
 		return end;
 	}
 	
+	
+	/**
+	 * Number of signal steps between measure points.
+	 * 
+	 * @return Step width between values as <code>int</code>.
+	 */
 	public int step () {
 		return step;
 	}
 	
+	/**
+	 * Signal bias, relative position of signal maximum in spectrum. 
+	 * This value will be 0 if max is located at signal <code>start</code> index, 
+	 * and can reach 1 if located at the end of <code>value</code> list.
+	 * 
+	 * @return Relative position of maxima within values list as <code>float</code>.
+	 */
 	public float bias () {
 		return (float) maxAt () / length();
 	}
 	
+	/**
+	 * Signal peak, realative amplitude of signal maximum in spectrum.
+	 * 
+	 * @return Relative amplitude of maxima within values list as <code>float</code>.
+	 */
 	public float peak () {
 		return max () / TactConstants.AMPLITUDE_MAX;
 	}
