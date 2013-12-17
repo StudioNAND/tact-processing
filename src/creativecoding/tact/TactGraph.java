@@ -63,6 +63,10 @@ public class TactGraph {
 	 * Theme key for bin fill color.
 	 */
 	public static final String THEME_BIN_FILL = "bin-fill";
+	/**
+	 * Theme key for diagram title font color.
+	 */
+	public static final String THEME_TITLE_FILL = "title-fill";
 	
 	private static final int AXIS_MARKER_X_NUM = 4;
 	private static final int AXIS_MARKER_Y_NUM = 4;
@@ -162,6 +166,7 @@ public class TactGraph {
 			dark.put (THEME_AXIS_MARKER, (255 << 24) | (90 << 16) | (90 << 8) | 90);
 			dark.put (THEME_BIN_FILL, (40 << 24) | (210 << 16) | (210 << 8) | 210);
 			dark.put (THEME_BIN_STROKE, (120 << 24) | (180 << 16) | (180 << 8) | 180);
+			dark.put (THEME_TITLE_FILL, (255 << 24) | (80 << 16) | (80 << 8) | 80);
 			
 			bright = new HashMap<String, Integer> ();
 			bright.put (THEME_GRAPH, (255 << 24) | (250 << 16) | (250 << 8) | 250);
@@ -172,6 +177,7 @@ public class TactGraph {
 			bright.put (THEME_AXIS_MARKER, (255 << 24) | (190 << 16) | (190 << 8) | 190);
 			bright.put (THEME_BIN_FILL, (40 << 24) | (210 << 16) | (210 << 8) | 210);
 			bright.put (THEME_BIN_STROKE, (120 << 24) | (180 << 16) | (180 << 8) | 180);
+			bright.put (THEME_TITLE_FILL, (255 << 24) | (200 << 16) | (200 << 8) | 200);
 			
 			theme = dark;
 		}
@@ -201,6 +207,7 @@ public class TactGraph {
 		if (displayGuides)
 			drawGuides (new float[] {sensor.minBias (), sensor.maxBias ()}, new float[] {sensor.minPeak (), sensor.maxPeak ()});
 		
+		drawTitle ("Spectrum");
 		graph (sensor.latestValues (), sensor.latestSpectrum ().start (), sensor.latestSpectrum ().end (), TactConstants.AMPLITUDE_MIN, TactConstants.AMPLITUDE_MAX);
 		
 		if (displayHelper)
@@ -231,6 +238,7 @@ public class TactGraph {
 	public void bias (TactSensor sensor) {
 		if (displayGuides)
 			drawGuides (null, new float[] {sensor.minBias (), sensor.maxBias ()});
+		drawTitle ("Bias");
 		graph (sensor.bias, 0, sensor.bias.length, 0f, 1f);
 	}
 	
@@ -246,6 +254,7 @@ public class TactGraph {
 	public void peak (TactSensor sensor) {
 		if (displayGuides)
 			drawGuides (null, new float[] {sensor.minPeak (), sensor.maxPeak ()});
+		drawTitle ("Peak");
 		graph (sensor.peak, 0, sensor.peak.length, 0f, 1f);
 	}
 	
@@ -386,6 +395,17 @@ public class TactGraph {
 			
 			parent.g.text (xlabel, parent.mouseX + 5, y + height - offsetY - 3);
 		}
+	}
+	
+	/**
+	 * Renders title in upper-left corner of the diagram canvas.
+	 * 
+	 * @param title to render as <code>String</code>.
+	 * @since 0.1
+	 */
+	private void drawTitle (String title) {
+		parent.g.fill (theme.get (THEME_TITLE_FILL));
+		parent.g.text (title, x + offsetX + 10, y + 15);
 	}
 	
 	/**
