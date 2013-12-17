@@ -48,6 +48,11 @@ public class TactSensor implements TactConstants {
 	private String name;
 	
 	/**
+	 * Total number of received sensor updates.
+	 */
+	private long receivedCount = 0;
+	
+	/**
 	 * Number of measures that will be made when 
 	 * retrieving the signal spectrum.
 	 * @see TactSpectrum#length()
@@ -240,6 +245,9 @@ public class TactSensor implements TactConstants {
 			peak[i-1] = peak[i];
 		// Add present buffer-peak
 		peak[peak.length - 1] = b.peak ();
+		
+		// Level up received counter
+		receivedCount++;
 	}
 	
 	/**
@@ -538,6 +546,19 @@ public class TactSensor implements TactConstants {
 	}
 	
 	/**
+	 * Number of received sensor updates since start or 
+	 * <code>reset()</code> call.
+	 * 
+	 * @return Total number of received updates as
+	 *         <code>long</code>.
+	 * @see #reset()
+	 * @since 0.1
+	 */
+	public long receivedCount () {
+		return receivedCount;
+	}
+	
+	/**
 	 * Resets <code>bias()</code> min and max values. Thoses are 
 	 * constantly checked and as the case maybe updated. This functions 
 	 * allows to reset those constrains by assigning <code>
@@ -572,8 +593,10 @@ public class TactSensor implements TactConstants {
 	 * Resets buffers and signal boundaries. Method is called when 
 	 * performing <code>readings()</code>, <code>start()</code> and 
 	 * <code>step()</code> setters to ensure comparability within 
-	 * present and previous <code>TactSpectrum</code> instances.
+	 * present and previous <code>TactSpectrum</code> instances. 
+	 * Invoking this method will also reset the <code>receivedCount</code>.
 	 * 
+	 * @see #receivedCount()
 	 * @see #readings(int)
 	 * @see #start(int)
 	 * @see #step(int)
@@ -590,5 +613,7 @@ public class TactSensor implements TactConstants {
 		peak = new float[peak.length];
 		// Clear buffer
 		buffer = new TactSpectrum[buffer.length];
+		
+		receivedCount = 0;
 	}
 }
