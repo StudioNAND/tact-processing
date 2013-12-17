@@ -52,8 +52,14 @@ public class Tact {
 	private int sensorIndex = 0;
 	private float[] bufferTemp = new float[0];
 	
+	/**
+	 * Flag if update cycle is currently active.
+	 */
 	private boolean running = false;
 	
+	/**
+	 * Update cycle rest period.
+	 */
 	public int sleep = 2;
 	
 	/**
@@ -159,18 +165,52 @@ public class Tact {
 		return s;
 	}
 	
-	public TactSensor addSensor (String name, int start, int length) {
-		TactSensor s = new TactSensor (name, start, length);
+	/**
+	 * Adds a new Tact sensor.
+	 * 
+	 * @param name sensor identifier as <code>String</code>.
+	 * @param start index where signal reading are taken from.
+	 * @param readings total number of measurements taken 
+	 *        from the signal spectrum.
+	 * @return sensor instance as <code>TactSensor</code>.
+	 * @since 0.1
+	 */
+	public TactSensor addSensor (String name, int start, int readings) {
+		TactSensor s = new TactSensor (name, start, readings);
 		sensors.add (s);
 		return s;
 	}
 	
-	public TactSensor addSensor (String name, int start, int length, int step) {
-		TactSensor s = new TactSensor (name, start, length, step);
+	/**
+	 * Adds a new Tact sensor.
+	 * 
+	 * @param name sensor identifier as <code>String</code>.
+	 * @param start index where signal readings are taken from.
+	 * @param readings total number of measurements taken from 
+	 *        the sensor's signal spectrum.
+	 * @param step width between measure points.
+	 * @return sensor instance as <code>TactSensor</code>.
+	 * @since 0.1
+	 */
+	public TactSensor addSensor (String name, int start, int readings, int step) {
+		TactSensor s = new TactSensor (name, start, readings, step);
 		sensors.add (s);
 		return s;
 	}
 	
+	/**
+	 * Adds a new Tact sensor.
+	 * 
+	 * @param name identifier as <code>String</code>.
+	 * @param start index where signal readings are taken from.
+	 * @param length total number or measurements taken from 
+	 *        the sensor's signal spectrum.
+	 * @param step width between measure points.
+	 * @param bufferSize number stored <code>TactSpectrum</code> 
+	 *        instances that previously have been received.
+	 * @return sensor instance as <code>TactSensor</code>.
+	 * @since 0.1
+	 */
 	public TactSensor addSensor (String name, int start, int length, int step, int bufferSize) {
 		TactSensor s = new TactSensor (name, start, length, step, bufferSize);
 		sensors.add (s);
