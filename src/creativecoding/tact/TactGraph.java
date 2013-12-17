@@ -216,14 +216,53 @@ public class TactGraph {
 	
 	/**
 	 * Renders <code>TactSpectrum</code> within the given 
+	 * diagram dimensions. Define a bin resolution for also 
+	 * plotting the signal in groups of n-bins, whereby n 
+	 * must be power of two; not exceeding the <code>length</code> 
+	 * of the <code>TactSpectrum</code>.<br /> 
+	 * For also plotting the min- and maxima bounds, use the 
+	 * {@link #spectrum(TactSensor)} version of this method.
+	 * 
+	 * 
+	 * @param spectrum to plot as diagram.
+	 * @param bins number of groups to simplify signal.
+	 * @see TactSpectrum#values
+	 * @see TactSpectrum#bins(int)
+	 * @since 0.1
+	 */
+	public void spectrum (TactSpectrum spectrum, int bins) {
+		
+		// Draw signal segmentation into n-bins 
+		if (bins > 0)
+			bins (new float[][] {spectrum.bins (bins)}, TactConstants.AMPLITUDE_MIN, TactConstants.AMPLITUDE_MAX);
+		
+		drawTitle ("Spectrum");
+		graph (spectrum.values, spectrum.start (), spectrum.end (), TactConstants.AMPLITUDE_MIN, TactConstants.AMPLITUDE_MAX);
+	}
+	
+	/**
+	 * Renders <code>TactSpectrum</code> within the given 
 	 * diagram dimension.
 	 * 
-	 * @param sensor source for retrieving latest spectrum from
+	 * @param sensor source for retrieving latest spectrum.
 	 * @see TactSpectrum#values
 	 * @since 0.1
 	 */
 	public void spectrum (TactSensor sensor) {
 		spectrum (sensor, 0);
+	}
+	
+	/**
+	 * Renders <code>TactSpectrum</code> within the given diagram dimensions. 
+	 * For also plotting the min- and maxima bounds, use the 
+	 * {@link #spectrum(TactSensor)} version of this method.
+	 * 
+	 * @param spectrum to plot as diagram.
+	 * @see TactSpectrum#values
+	 * @since 0.1
+	 */
+	public void spectrum (TactSpectrum spectrum) {
+		spectrum (spectrum, 0);
 	}
 	
 	/**
