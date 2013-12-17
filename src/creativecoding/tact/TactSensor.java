@@ -457,14 +457,21 @@ public class TactSensor implements TactConstants {
 	 * Sets the number of measurements (readings) taken from the 
 	 * signal of the sensor. The width of the read part results 
 	 * from this value times <code>step</code>, which represents 
-	 * the gap between the readings.
+	 * the gap between the readings.<br />
+	 * Calling this method will invoke <code>reset()</code> to 
+	 * underline structural differences with previous spectra.
 	 * 
 	 * @param readings number of measurepoints taken from the 
 	 *                 signal as <code>int</code>.
+	 * @see #reset()
 	 * @simce 0.1
 	 */
 	public void readings (int readings) {
-		this.readings = readings;
+		// Only perform when needed
+		if (this.readings != readings) {
+			this.readings = readings;
+			reset ();
+		}
 	}
 	
 	/**
@@ -482,14 +489,21 @@ public class TactSensor implements TactConstants {
 	
 	/**
 	 * Sets the start index of the of the spectrum within
-	 * the sensor signal.
+	 * the sensor signal.<br />
+	 * Calling this method will invoke <code>reset()</code> to 
+	 * underline structural differences with previous spectra.
 	 * 
 	 * @param start Index within the signal where first 
 	 *        measurement is taken as <code>int</code>.
+	 * @see #reset()
 	 * @since 0.1
 	 */
 	public void start (int start) {
-		this.start = start;
+		// Only perform when needed
+		if (this.start != start) {
+			this.start = start;
+			reset ();
+		}
 	}
 	
 	/**
@@ -506,14 +520,21 @@ public class TactSensor implements TactConstants {
 	/**
 	 * Sets the step width between all measure points. A step 
 	 * width of 3 results in a gap of two measure units between 
-	 * the resulting values.
+	 * the resulting values.<br />
+	 * Calling this method will invoke <code>reset()</code> to 
+	 * underline structural differences with previous spectra. 
 	 * 
 	 * @param step number of measure units after which a 
 	 *             reading will be made.
+	 * @see #reset()
 	 * @since 0.1
 	 */
 	public void step (int step) {
-		this.step = step;
+		// Only perform when needed
+		if (this.step != step) {
+			this.step = step;
+			reset ();
+		}
 	}
 	
 	/**
@@ -545,5 +566,29 @@ public class TactSensor implements TactConstants {
 	public void resetPeak () {
 		peakMax = Float.MIN_VALUE;
 		peakMin = Float.MAX_VALUE;
+	}
+	
+	/**
+	 * Resets buffers and signal boundaries. Method is called when 
+	 * performing <code>readings()</code>, <code>start()</code> and 
+	 * <code>step()</code> setters to ensure comparability within 
+	 * present and previous <code>TactSpectrum</code> instances.
+	 * 
+	 * @see #readings(int)
+	 * @see #start(int)
+	 * @see #step(int)
+	 * @since 0.1
+	 */
+	public void reset () {
+		// Resets min- and maxima that have 
+		// been recorded so far.
+		resetBias ();
+		resetPeak ();
+		
+		// Clear histograms
+		bias = new float[bias.length];
+		peak = new float[peak.length];
+		// Clear buffer
+		buffer = new TactSpectrum[buffer.length];
 	}
 }
