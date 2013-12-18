@@ -268,7 +268,10 @@ public class TactSensor implements TactConstants {
 		float values[] = new float[buffer[0].length ()];
 		long time = 0;
 		
-		for (int i=0; i < buffer.length; i++) {
+		int start = (receivedCount < buffer.length) ? buffer.length - (int) (receivedCount) : 0;
+		int devide = (receivedCount < buffer.length) ? (int) receivedCount : buffer.length;
+		
+		for (int i=start; i < buffer.length; i++) {
 			
 			time += buffer[i].time;
 			for (int j=0; j < buffer[i].values.length; j++)
@@ -276,9 +279,9 @@ public class TactSensor implements TactConstants {
 		}
 		
 		for (int i=0; i < values.length; i++)
-			values[i] /= buffer.length;
+			values[i] /= devide;
 		
-		return new TactSpectrum (time / buffer.length, values, buffer[0].start (), buffer[0].step());
+		return new TactSpectrum (time / devide, values, buffer[0].start (), buffer[0].step());
 	}
 	
 	/**
