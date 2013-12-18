@@ -131,6 +131,11 @@ public class TactGraph {
 	private int axisStrokeWeight = 1;
 	private float axisTextSize = 10;
 	
+	/**
+	 * Flag for showing and hiding diagram title caption.
+	 */
+	public boolean displayTitle = true;
+	
 	private boolean displayHelper = false;
 	private int helperStrokeWeight = 1;
 	
@@ -207,7 +212,9 @@ public class TactGraph {
 		if (displayGuides)
 			drawGuides (new float[] {sensor.minBias (), sensor.maxBias ()}, new float[] {sensor.minPeak (), sensor.maxPeak ()});
 		
-		drawTitle ("Spectrum");
+		if (displayTitle)
+			drawTitle ("Spectrum");
+		
 		graph (sensor.latestValues (), sensor.latestSpectrum ().start (), sensor.latestSpectrum ().end (), TactConstants.AMPLITUDE_MIN, TactConstants.AMPLITUDE_MAX);
 		
 		if (displayHelper)
@@ -236,7 +243,9 @@ public class TactGraph {
 		if (bins > 0)
 			bins (new float[][] {spectrum.bins (bins)}, TactConstants.AMPLITUDE_MIN, TactConstants.AMPLITUDE_MAX);
 		
-		drawTitle ("Spectrum");
+		if (displayTitle)
+			drawTitle ("Spectrum");
+		
 		graph (spectrum.values, spectrum.start (), spectrum.end (), TactConstants.AMPLITUDE_MIN, TactConstants.AMPLITUDE_MAX);
 	}
 	
@@ -277,7 +286,10 @@ public class TactGraph {
 	public void bias (TactSensor sensor) {
 		if (displayGuides)
 			drawGuides (null, new float[] {sensor.minBias (), sensor.maxBias ()});
-		drawTitle ("Bias");
+		
+		if (displayTitle)
+			drawTitle ("Bias");
+		
 		graph (sensor.bias, 0, sensor.bias.length, 0f, 1f);
 	}
 	
@@ -293,7 +305,10 @@ public class TactGraph {
 	public void peak (TactSensor sensor) {
 		if (displayGuides)
 			drawGuides (null, new float[] {sensor.minPeak (), sensor.maxPeak ()});
-		drawTitle ("Peak");
+		
+		if (displayTitle)
+			drawTitle ("Peak");
+		
 		graph (sensor.peak, 0, sensor.peak.length, 0f, 1f);
 	}
 	
