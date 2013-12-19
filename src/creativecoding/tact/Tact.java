@@ -74,6 +74,15 @@ public class Tact {
 	 */
 	public List<TactSensor> sensors;
 	
+	/**
+	 * Point in time until update thread shall be running irrespectively 
+	 * of the <code>running</code> flag. This timer is based on 
+	 * <code>PApplet</code>'s <code>millis</code> attribute and used 
+	 * to awaite initial handshake when starting up connection between 
+	 * <code>Tact</code> and sensor.
+	 */
+	private long runUntil = 0;
+	
 	Method tactEvent;
 	
 	PApplet parent;
@@ -134,8 +143,16 @@ public class Tact {
 			// First of all, clear the port.
 			serial.clear ();
 			
-			running = true;
+			// Start handshake process, now awaiting 
+			// a "5" as response code
+			serial.write ("hi");
+			// Allow this response to happen within the 
+			// next two seconds ...
+			runUntil = parent.millis () + 2000;
 			
+			// Start the update thread, waiting for inital 
+			// response. This thread to commit suicide when 
+			// there is no response after "runUntil" is up.
 			thread = new Thread (new TactUpdateThread ());
 			thread.start ();
 			
@@ -223,9 +240,9 @@ public class Tact {
 	 */
 	public void stop () {
 		if (running) {
-			running = false;
 			thread.interrupt ();
 			serial.stop ();
+			running = false;
 		}
 	}
 	
@@ -242,39 +259,70 @@ public class Tact {
 		return running;
 	}
 	
-	private void parseMessage (int value) {
-		if (value >= 0 && value < 1024) {
-			// Append to value spectrum
-			bufferTemp = PApplet.append (bufferTemp, value);
+	/**
+	 * Parses and acts on incoming serial data.
+	 */
+	protected void receive () {
+		while (serial.available () > 0) {
 			
-		}else if (value == 2000) {
-			// Clear the temporary value array
-			// to begin with a fresh list
-			bufferTemp = new float[0];
-		
-		}else if (value == 2001) {
-			// Finish filling up value array by copying 
-			// temp version into the processable counterpart.
-			// A wrapped signal - the TactSpectrum
-			TactSpectrum spectrum = new TactSpectrum (parent.millis (), bufferTemp.clone (), sensors.get (sensorIndex).start (), sensors.get (sensorIndex).step ());
+			int b = serial.read();
 			
-			try {
-				// Update the designated sensor instance
-				// by assining the received spectrum.
-				sensors.get (sensorIndex).push (spectrum);
+			if (firstByte) {
+				buffer = b;
+				firstByte = false;
+			}else{ 
+				buffer += b << 8;
 				
-				// Tell all listeners (PApplet etc.) that 
-				// there new data is available. 
-				dispatchEvent (new TactEvent (this, sensors.get (sensorIndex)));
+				// Do something neat with
+				// incoming value
 				
-			}catch (Exception e) {
-				System.err.println("Could not assign TactSpectrum to sensor with index " + sensorIndex + ".");
+				// If sensor connection is not established yet - still awaiting
+				// the initial handshake ...
+				if (!running) {
+					// And "5" just came in, finalizse the setup 
+					// process and set runnunig flag to active.
+					if (buffer == 5) {
+						running = true;
+						System.out.println ("Tact said \"Hi5\" - Now up and running, good to go!");
+					}
+				}else if (buffer >= 0 && buffer < 1024) {
+					// Append to value spectrum
+					bufferTemp = PApplet.append (bufferTemp, buffer);
+					
+				}else if (buffer == 2000) {
+					// Clear the temporary value array
+					// to begin with a fresh list
+					bufferTemp = new float[0];
+				
+				}else if (buffer == 2001) {
+					// Finish filling up value array by copying 
+					// temp version into the processable counterpart.
+					// A wrapped signal - the TactSpectrum
+					TactSpectrum spectrum = new TactSpectrum (parent.millis (), bufferTemp.clone (), sensors.get (sensorIndex).start (), sensors.get (sensorIndex).step ());
+					
+					try {
+						// Update the designated sensor instance
+						// by assining the received spectrum.
+						sensors.get (sensorIndex).push (spectrum);
+						
+						// Tell all listeners (PApplet etc.) that 
+						// there new data is available. 
+						dispatchEvent (new TactEvent (this, sensors.get (sensorIndex)));
+						
+					}catch (Exception e) {
+						System.err.println("Could not assign TactSpectrum to sensor with index " + sensorIndex + ".");
+					}
+					
+					bufferTemp = new float[0];
+					
+				}else if (buffer >= 3000 && buffer < 3008) {
+					sensorIndex = buffer - 3000;
+				}
+			    
+				// Rest byte-buffer
+				buffer = 0;
+				firstByte = true;
 			}
-			
-			bufferTemp = new float[0];
-			
-		}else if (value >= 3000 && value < 3008) {
-			sensorIndex = value - 3000;
 		}
 	}
 	
@@ -351,53 +399,60 @@ public class Tact {
 	 * @since 0.1
 	 */
 	public class TactUpdateThread implements Runnable {
+		
 		public void run () {
 			
-			while (running) {
+			if (sensors.size () == 0)
+				return;
+									
+			// If either sensor init is processed and "running" is true 
+			// or handshake is still awaited, which means that "runUntil"
+			// time is still active ...
+			while (running || parent.millis () < runUntil) {
 				
-				if (sensors.size () == 0)
-					return;
-				
-				for (int i=0; i < sensors.size (); i++) {
+				// If everything is up and running, 
+				// request and process sensor data.
+				if (running) {
 					
-					// Request values
-					serial.write ('g');
-					serial.write (Integer.toString (i));
-					serial.write (';');
-					serial.write (Integer.toString (sensors.get (i).start ()));
-					serial.write (';');
-					serial.write (Integer.toString (sensors.get (i).readings ()));
-					serial.write (';');
-					serial.write (Integer.toString (sensors.get (i).step ()));
-					serial.write (';');
-					serial.write (10);
-					
-					while (serial.available () > 0) {
+					// For each single sensor ...
+					for (int i=0; i < sensors.size (); i++) {
 						
-						int b = serial.read();
+						// Request values
+						serial.write ('g');
+						serial.write (Integer.toString (i));
+						serial.write (';');
+						serial.write (Integer.toString (sensors.get (i).start ()));
+						serial.write (';');
+						serial.write (Integer.toString (sensors.get (i).readings ()));
+						serial.write (';');
+						serial.write (Integer.toString (sensors.get (i).step ()));
+						serial.write (';');
+						serial.write (10);
 						
-						if (firstByte) {
-							buffer = b;
-							firstByte = false;
-						}else{ 
-							buffer += b << 8;
-							// Do something neat with
-							// incoming value
-							parseMessage(buffer);
-						    
-							// Rest byte-buffer
-							buffer = 0;
-							firstByte = true;
+						// Process response ...
+						receive();
+						
+						// Get some rest...
+						try {
+							Thread.sleep (sleep);
+						} catch (InterruptedException e) {
+							Thread.currentThread().interrupt();
 						}
 					}
+				}else{
 					
-					// Get some rest...
-					try {
-						Thread.sleep (sleep);
-					} catch (InterruptedException e) {
-						Thread.currentThread().interrupt();
-					}
+					// Await sensor's handshake response
+					// until "runUntil" time is up ...
+					receive ();
 				}
+			}
+			
+			// Cancel this thread if the sensor connection has not been 
+			// initialised so far and the designated time span is up.
+			if (!running && parent.millis () >= runUntil) {
+				System.err.println ("Tact sensor is not responding. Please check the connection and make sure that it is running the right Arduino sketch.");
+				// Destroy thread :(
+				stop();
 			}
 		}
 	}
