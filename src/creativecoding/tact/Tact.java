@@ -283,7 +283,7 @@ public class Tact {
 					// process and set runnunig flag to active.
 					if (buffer == 5) {
 						running = true;
-						System.out.println ("Tact said \"Hi5\" - Now up and running, good to go!");
+						System.out.println ("Tact says \"Hi5\" - Now up and running, good to go!");
 					}
 				}else if (buffer >= 0 && buffer < 1024) {
 					// Append to value spectrum
@@ -402,8 +402,11 @@ public class Tact {
 		
 		public void run () {
 			
-			if (sensors.size () == 0)
+			if (sensors.size () == 0) {
+				System.err.println ("Tact updates stopped. There are no sensors registered. Create one using tact.addSensor(\"tact1\")");
+				stop();
 				return;
+			}
 									
 			// If either sensor init is processed and "running" is true 
 			// or handshake is still awaited, which means that "runUntil"
