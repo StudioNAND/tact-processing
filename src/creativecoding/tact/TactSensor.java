@@ -26,8 +26,6 @@ import creativecoding.tact.TactConstants;
 /**
  * <p>A <code>TactSensor</code> represents a top-level capacitive Tact sensor.</p>
  * 
- * <p>The purpose of this class is to wrap a </p>
- * 
  * <p>The following instanciation creates a sensor instances that will deliver signal 
  * spectra which start at 44 and contain 32 measure points with a step size of 2. 
  * The sensor instance will also store the 64 most recent <code>TactSpectrum</code> 
@@ -265,11 +263,13 @@ public class TactSensor implements TactConstants {
 	 */
 	public TactSpectrum movingAverage () {
 		
+		if (receivedCount == 0)
+			return new TactSpectrum (0, buffer[0].start (), buffer[0].length (), buffer[0].step ());
+		
 		float values[] = new float[buffer[0].length ()];
 		long time = 0;
 		
 		int start = (receivedCount < buffer.length) ? buffer.length - (int) (receivedCount) : 0;
-		int devide = (receivedCount < buffer.length) ? (int) receivedCount : buffer.length;
 		
 		for (int i=start; i < buffer.length; i++) {
 			
@@ -279,9 +279,9 @@ public class TactSensor implements TactConstants {
 		}
 		
 		for (int i=0; i < values.length; i++)
-			values[i] /= devide;
+			values[i] /= (buffer.length - start);
 		
-		return new TactSpectrum (time / devide, values, buffer[0].start (), buffer[0].step());
+		return new TactSpectrum (time / (buffer.length - start), values, buffer[0].start (), buffer[0].step());
 	}
 	
 	/**
