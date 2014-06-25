@@ -215,7 +215,7 @@ public class TactGraph {
 		if (displayTitle)
 			drawTitle ("Spectrum");
 		
-		graph (sensor.latestValues (), sensor.latestSpectrum ().start (), sensor.latestSpectrum ().end (), TactConstants.AMPLITUDE_MIN, TactConstants.AMPLITUDE_MAX);
+		graph (sensor.latestValues (), sensor.latestSpectrum ().start, sensor.latestSpectrum ().end, TactConstants.AMPLITUDE_MIN, TactConstants.AMPLITUDE_MAX);
 		
 		if (displayHelper)
 			drawHelper(sensor);
@@ -246,7 +246,7 @@ public class TactGraph {
 		if (displayTitle)
 			drawTitle ("Spectrum");
 		
-		graph (spectrum.values, spectrum.start (), spectrum.end (), TactConstants.AMPLITUDE_MIN, TactConstants.AMPLITUDE_MAX);
+		graph (spectrum.values, spectrum.start, spectrum.end, TactConstants.AMPLITUDE_MIN, TactConstants.AMPLITUDE_MAX);
 	}
 	
 	/**

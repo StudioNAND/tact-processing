@@ -18,6 +18,7 @@
 
 package creativecoding.tact;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import creativecoding.tact.TactSpectrum;
@@ -151,8 +152,11 @@ public class TactSensor implements TactConstants {
 		
 		final Date date = new Date ();
 		
+		float[] values = new float[readings];
+		Arrays.fill (values, 0f);
+		
 		for (int i=0; i < bufferSize; i++)
-			buffer[i] = new TactSpectrum (date.getTime (), start, readings, step);
+			buffer[i] = new TactSpectrum (date.getTime (), values, start, step);
 	}
 	
 	/**
@@ -263,9 +267,12 @@ public class TactSensor implements TactConstants {
 	 */
 	public TactSpectrum movingAverage () {
 		
-		if (receivedCount == 0)
-			return new TactSpectrum (0, buffer[0].start (), buffer[0].length (), buffer[0].step ());
-		
+		if (receivedCount == 0) {
+			float[] values = new float[buffer[0].length ()];
+			Arrays.fill (values, 0f);
+			return new TactSpectrum (0, values, buffer[0].start, buffer[0].step);
+		}
+			
 		float values[] = new float[buffer[0].length ()];
 		long time = 0;
 		
@@ -281,7 +288,7 @@ public class TactSensor implements TactConstants {
 		for (int i=0; i < values.length; i++)
 			values[i] /= (buffer.length - start);
 		
-		return new TactSpectrum (time / (buffer.length - start), values, buffer[0].start (), buffer[0].step());
+		return new TactSpectrum (time / (buffer.length - start), values, buffer[0].start, buffer[0].step);
 	}
 	
 	/**

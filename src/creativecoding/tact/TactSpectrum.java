@@ -29,17 +29,24 @@ import creativecoding.tact.TactConstants;
 public class TactSpectrum {
 	
 	/**
-	 * Start index of signal spectrum readinds.
+	 * Start index where measurments are taken from sensor signal. 
+	 * This attribute is defined on instantiation and can not be modified.
+	 * @since 0.1
 	 */
-	private int start;
+	public final int start;
+	
 	/**
-	 * End index of signal spectrum readings.
+	 * End index where measurements are taken from sensor signal. 
+	 * This attribute is defined on instantiation and can not be modified.
+	 * @since 0.1
 	 */
-	private int end;
+	public final int end;
+	
 	/**
-	 * Step width between signal spectrum readinds.
+	 * Number of signal steps between measure points.
+	 * @since 0.1
 	 */
-	private int step;
+	public final int step;
 	
 	/**
 	 * Signal spectrum values. These are the core values that represent 
@@ -47,12 +54,12 @@ public class TactSpectrum {
 	 * <code>start</code> index within the spectrum, whereas the following 
 	 * ones are measured with an interval of <code>step</code>.
 	 */
-	public float[] values;
+	public final float[] values;
 	
 	/**
 	 * Timestamp when signal was received.
 	 */
-	public long time;
+	public final long time;
 	
 	/**
 	 * Creates a new <code>TactSpectrum</code> instance. This 
@@ -72,22 +79,6 @@ public class TactSpectrum {
 		this.start = start;
 		this.step = step;
 		end = start + values.length * step;
-	}
-	
-	/**
-	 * Creates a new <code>TactSpectrum</code> instance. This 
-	 * will hold a Tact value set (signal spectrum) which has 
-	 * been received at a specific point in time.
-	 * 
-	 * @param time when the value set has been received/recorded 
-	 *        as <code>long</code> (UNIX stamp).
-	 * @param start index where measures have been taken from.
-	 * @param length total number of measures.
-	 * @param step width between signal values.
-	 * @since 0.1
-	 */
-	public TactSpectrum (final long time, final int start, final int length, final int step) {
-		this(time, new float[length], start, step);
 	}
 	
 	/**
@@ -127,42 +118,6 @@ public class TactSpectrum {
 	 */
 	public int length () {
 		return values.length;
-	}
-	
-	/**
-	 * Start index where measurments are taken from sensor signal. 
-	 * This attribute is defined on instantiation and can not be modified.
-	 * 
-	 * @return Start index within signal spectrum 
-	 *         where <code>values</code> are taken 
-	 *         from as <code>int</code>.
-	 * @since 0.1
-	 */
-	public int start () {
-		return start;
-	}
-	
-	/**
-	 * End index where measurements are taken from sensor signal. 
-	 * This attribute is defined on instantiation and can not be modified.
-	 * 
-	 * @return End index within signal spectrum where 
-	 *         <code>values</code> are taken from as 
-	 *         <code>int</code>.
-	 * @since 0.1
-	 */
-	public int end () {
-		return end;
-	}
-	
-	
-	/**
-	 * Number of signal steps between measure points.
-	 * 
-	 * @return Step width between values as <code>int</code>.
-	 */
-	public int step () {
-		return step;
 	}
 	
 	/**
