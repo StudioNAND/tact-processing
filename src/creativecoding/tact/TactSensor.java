@@ -383,7 +383,7 @@ public class TactSensor implements TactConstants {
 	 * @since 0.1
 	 */
 	public float peak () {
-		return (float) latestSpectrum().max() / AMPLITUDE_MAX;
+		return latestSpectrum().max() / AMPLITUDE_MAX;
 	}
 	
 	/**

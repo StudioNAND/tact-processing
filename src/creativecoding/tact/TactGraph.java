@@ -444,7 +444,7 @@ public class TactGraph {
 		if (parent.mouseX > x + offsetX && parent.mouseX < x + width && parent.mouseY > y && parent.mouseY < y + height - offsetY) {
 			parent.g.line (parent.mouseX, y, parent.mouseX, y + height - offsetY);
 			
-			final int index = (int) (((parent.mouseX - x - offsetX) / (float) (width - offsetX)) * sensor.readings ());
+			final int index = (int) (((parent.mouseX - x - offsetX) / (width - offsetX)) * sensor.readings ());
 			String xlabel = Integer.toString (sensor.start () + sensor.step () * index);
 			
 			parent.g.text (xlabel, parent.mouseX + 5, y + height - offsetY - 3);
