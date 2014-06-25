@@ -153,7 +153,7 @@ public class TactGraph {
 	 * @param height diagram total height
 	 * @since 0.1
 	 */
-	public TactGraph (PApplet parent, float x, float y, float width, float height) {
+	public TactGraph (PApplet parent, final float x, final float y, final float width, final float height) {
 		this.parent = parent;
 		this.x = x;
 		this.y = y;
@@ -203,7 +203,7 @@ public class TactGraph {
 	 * @see TactSpectrum#bins(int)
 	 * @since 0.1
 	 */
-	public void spectrum (TactSensor sensor, int bins) {
+	public void spectrum (final TactSensor sensor, final int bins) {
 		
 		// Draw signal segmentation into n-bins 
 		if (bins > 0)
@@ -237,7 +237,7 @@ public class TactGraph {
 	 * @see TactSpectrum#bins(int)
 	 * @since 0.1
 	 */
-	public void spectrum (TactSpectrum spectrum, int bins) {
+	public void spectrum (final TactSpectrum spectrum, final int bins) {
 		
 		// Draw signal segmentation into n-bins 
 		if (bins > 0)
@@ -257,7 +257,7 @@ public class TactGraph {
 	 * @see TactSpectrum#values
 	 * @since 0.1
 	 */
-	public void spectrum (TactSensor sensor) {
+	public void spectrum (final TactSensor sensor) {
 		spectrum (sensor, 0);
 	}
 	
@@ -270,7 +270,7 @@ public class TactGraph {
 	 * @see TactSpectrum#values
 	 * @since 0.1
 	 */
-	public void spectrum (TactSpectrum spectrum) {
+	public void spectrum (final TactSpectrum spectrum) {
 		spectrum (spectrum, 0);
 	}
 	
@@ -283,7 +283,7 @@ public class TactGraph {
 	 * @see TactSensor#bias
 	 * @since 0.1
 	 */
-	public void bias (TactSensor sensor) {
+	public void bias (final TactSensor sensor) {
 		if (displayGuides)
 			drawGuides (null, new float[] {sensor.minBias (), sensor.maxBias ()});
 		
@@ -302,7 +302,7 @@ public class TactGraph {
 	 * @see TactSensor#peak
 	 * @since 0.1
 	 */
-	public void peak (TactSensor sensor) {
+	public void peak (final TactSensor sensor) {
 		if (displayGuides)
 			drawGuides (null, new float[] {sensor.minPeak (), sensor.maxPeak ()});
 		
@@ -322,7 +322,7 @@ public class TactGraph {
 	 * @param yMax the maximum value on the y-axis.
 	 * @since 0.1
 	 */
-	public void graph (float[] values, float xMin, float xMax, float yMin, float yMax) {
+	public void graph (final float[] values, final float xMin, final float xMax, final float yMin, final float yMax) {
 		graph (new float[][]{ values }, xMin, xMax, yMin, yMax);
 	}
 	
@@ -334,18 +334,18 @@ public class TactGraph {
 	 * @param yMax the maximum value on the y-axis.
 	 * @since 0.1
 	 */
-	public void bins (float[][] values, float yMin, float yMax) {
+	public void bins (final float[][] values, final float yMin, final float yMax) {
 		
 		if (values.length < 1)
 			return;
 		
-		float xStep = (width - offsetX) / values[0].length;
-		float yStep = (height - offsetY) / (yMax - yMin);
+		final float xStep = (width - offsetX) / values[0].length;
+		final float yStep = (height - offsetY) / (yMax - yMin);
 		
 		for (int j=0; j < values.length; j++) {
 			for (int i=0; i < values[j].length; i++) {
 				
-				float h = yStep * values[j][i];
+				final float h = yStep * values[j][i];
 				
 				parent.g.stroke (theme.get (THEME_BIN_STROKE));
 				parent.g.strokeWeight (segmentStrokeWeight);
@@ -378,7 +378,7 @@ public class TactGraph {
 	 * @param yMax
 	 * @since 0.1
 	 */
-	public void graph (float[][] values, float xMin, float xMax, float yMin, float yMax) {
+	public void graph (final float[][] values, final float xMin, final float xMax, final float yMin, final float yMax) {
 		
 		if (displayAxis)
 			drawAxis (xMin, xMax, yMin, yMax);
@@ -386,8 +386,8 @@ public class TactGraph {
 		if (values.length < 1)
 			return;
 				
-		float xStep = (width - offsetX) / (values[0].length - 1);
-		float yStep = (height - offsetY) / (yMax - yMin);
+		final float xStep = (width - offsetX) / (values[0].length - 1);
+		final float yStep = (height - offsetY) / (yMax - yMin);
 		
 		parent.g.stroke (theme.get (THEME_GRAPH));
 		parent.g.noFill ();
@@ -406,14 +406,14 @@ public class TactGraph {
 	 * @param yvalues list of positions on the y-axis.
 	 * @since 0.1
 	 */
-	private void drawGuides (float[] xvalues, float[] yvalues) {
+	private void drawGuides (final float[] xvalues, final float[] yvalues) {
 		
 		parent.g.stroke (theme.get (THEME_AXIS_GUIDE));
 		parent.g.strokeWeight (1);
 		
 		if (xvalues != null) {
 			for (float xv : xvalues) {
-				float xp = x + offsetX + xv * (width - offsetX);
+				final float xp = x + offsetX + xv * (width - offsetX);
 				float yp = y;
 				
 				parent.g.beginShape (PGraphics.LINES);
@@ -427,7 +427,7 @@ public class TactGraph {
 		
 		if (yvalues != null) {
 			for (float yv : yvalues) {
-				float yp = y + (1 - yv) * (height - offsetY);
+				final float yp = y + (1 - yv) * (height - offsetY);
 				float xp = x + offsetX;
 				
 				parent.g.beginShape (PGraphics.LINES);
@@ -444,7 +444,7 @@ public class TactGraph {
 		if (parent.mouseX > x + offsetX && parent.mouseX < x + width && parent.mouseY > y && parent.mouseY < y + height - offsetY) {
 			parent.g.line (parent.mouseX, y, parent.mouseX, y + height - offsetY);
 			
-			int index = (int) (((parent.mouseX - x - offsetX) / (float) (width - offsetX)) * sensor.readings ());
+			final int index = (int) (((parent.mouseX - x - offsetX) / (float) (width - offsetX)) * sensor.readings ());
 			String xlabel = Integer.toString (sensor.start () + sensor.step () * index);
 			
 			parent.g.text (xlabel, parent.mouseX + 5, y + height - offsetY - 3);
@@ -457,7 +457,7 @@ public class TactGraph {
 	 * @param title to render as <code>String</code>.
 	 * @since 0.1
 	 */
-	private void drawTitle (String title) {
+	private void drawTitle (final String title) {
 		parent.g.fill (theme.get (THEME_TITLE_FILL));
 		parent.g.text (title, x + offsetX + 10, y + 15);
 	}
@@ -471,7 +471,7 @@ public class TactGraph {
 	 * @param yMax the maximum value on the y-axis.
 	 * @sine 0.1
 	 */
-	private void drawAxis (float xMin, float xMax, float yMin, float yMax) {
+	private void drawAxis (final float xMin, final float xMax, final float yMin, final float yMax) {
 		
 		parent.g.stroke (theme.get (THEME_AXIS_LINE));
 		parent.g.strokeWeight (axisStrokeWeight);
@@ -489,8 +489,8 @@ public class TactGraph {
 		
 		for (int i=0; i <= AXIS_MARKER_X_NUM; i++) {
 			
-			float axisStep = (width - offsetX) / AXIS_MARKER_X_NUM;
-			float xpos = x + offsetX + axisStep * i;
+			final float axisStep = (width - offsetX) / AXIS_MARKER_X_NUM;
+			final float xpos = x + offsetX + axisStep * i;
 			
 			parent.g.stroke (theme.get (THEME_AXIS_MARKER));
 			parent.g.line (xpos, y + height - offsetY, xpos, y + height - offsetY + AXIS_MARKER_X_LENGTH);
@@ -502,7 +502,7 @@ public class TactGraph {
 				parent.g.line (xpos, y, xpos, y + height - offsetY - axisStrokeWeight);
 			}
 			
-			float label = xMin + markStepX * i;
+			final float label = xMin + markStepX * i;
 			
 			parent.g.fill (theme.get (THEME_AXIS_LABEL));
 			parent.g.textSize (axisTextSize);
@@ -519,8 +519,8 @@ public class TactGraph {
 		// For the fixed resolution of AXIS_MARKER_Y_NUM ...
 		for (int i=0; i <= AXIS_MARKER_Y_NUM; i++) {
 			
-			float axisStep = (height - offsetY) / AXIS_MARKER_Y_NUM;
-			float ypos = y + axisStep * i;
+			final float axisStep = (height - offsetY) / AXIS_MARKER_Y_NUM;
+			final float ypos = y + axisStep * i;
 			
 			// Draw vertical helper extension along the y-axis.
 			// These are the short lines next to the axis labels.
@@ -536,7 +536,7 @@ public class TactGraph {
 			}
 			
 			// Display the text labels along the y-axis
-			float label = yMax - markStepY * i;
+			final float label = yMax - markStepY * i;
 			parent.g.fill (theme.get (THEME_AXIS_LABEL));
 			parent.g.textSize (axisTextSize);
 			

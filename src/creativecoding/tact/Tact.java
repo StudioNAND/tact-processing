@@ -118,7 +118,7 @@ public class Tact {
 	 *                    the processing.Serial.list() array.
 	 * @since 0.1
 	 */
-	public void start (int serialIndex) {
+	public void start (final int serialIndex) {
 		start (serialIndex, BAUD_RATE);
 	}
 	
@@ -133,7 +133,7 @@ public class Tact {
 	 * @param baudrate pulses per second.
 	 * @since 0.1
 	 */
-	public void start (int serialIndex, int baudrate) {
+	public void start (final int serialIndex, final int baudrate) {
 		
 		// Check if Serial is availble (in pool)
 		if (Serial.list ().length >= serialIndex) {
@@ -176,7 +176,7 @@ public class Tact {
 	 * @return the instantiated sensor.
 	 * @since 0.1
 	 */
-	public TactSensor addSensor(String name) {
+	public TactSensor addSensor(final String name) {
 		TactSensor s = new TactSensor (name);
 		sensors.add (s);
 		return s;
@@ -192,7 +192,7 @@ public class Tact {
 	 * @return sensor instance as <code>TactSensor</code>.
 	 * @since 0.1
 	 */
-	public TactSensor addSensor (String name, int start, int readings) {
+	public TactSensor addSensor (final String name, final int start, final int readings) {
 		TactSensor s = new TactSensor (name, start, readings);
 		sensors.add (s);
 		return s;
@@ -209,7 +209,7 @@ public class Tact {
 	 * @return sensor instance as <code>TactSensor</code>.
 	 * @since 0.1
 	 */
-	public TactSensor addSensor (String name, int start, int readings, int step) {
+	public TactSensor addSensor (final String name, final int start, final int readings, final int step) {
 		TactSensor s = new TactSensor (name, start, readings, step);
 		sensors.add (s);
 		return s;
@@ -228,7 +228,7 @@ public class Tact {
 	 * @return sensor instance as <code>TactSensor</code>.
 	 * @since 0.1
 	 */
-	public TactSensor addSensor (String name, int start, int length, int step, int bufferSize) {
+	public TactSensor addSensor (final String name, final int start, final int length, final int step, final int bufferSize) {
 		TactSensor s = new TactSensor (name, start, length, step, bufferSize);
 		sensors.add (s);
 		return s;
@@ -265,7 +265,7 @@ public class Tact {
 	protected void receive () {
 		while (serial.available () > 0) {
 			
-			int b = serial.read();
+			final int b = serial.read();
 			
 			if (firstByte) {
 				buffer = b;
@@ -388,7 +388,7 @@ public class Tact {
 	 *         <code>false</code> otherwise.
 	 * @since 0.1
 	 */
-	public static final boolean isPowerOfTwo (int value) {
+	public static final boolean isPowerOfTwo (final int value) {
 		return (value & (value - 1)) == 0;
 	}
 	

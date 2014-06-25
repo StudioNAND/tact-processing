@@ -32,9 +32,9 @@ public class TactEvent extends EventObject {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public TactSensor sensor;
+	public final TactSensor sensor;
 	
-	public TactEvent (Object source, TactSensor sensor) {
+	public TactEvent (final Object source, final TactSensor sensor) {
 		super (source);
 		this.sensor = sensor;
 	}

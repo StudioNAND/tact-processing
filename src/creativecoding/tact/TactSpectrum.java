@@ -66,7 +66,7 @@ public class TactSpectrum {
 	 * @param step width between signal values.
 	 * @since 0.1
 	 */
-	public TactSpectrum (long time, float[] values, int start, int step) {
+	public TactSpectrum (final long time, final float[] values, final int start, final int step) {
 		this.time = time;
 		this.values = values;
 		this.start = start;
@@ -86,7 +86,7 @@ public class TactSpectrum {
 	 * @param step width between signal values.
 	 * @since 0.1
 	 */
-	public TactSpectrum (long time, int start, int length, int step) {
+	public TactSpectrum (final long time, final int start, final int length, final int step) {
 		this(time, new float[length], start, step);
 	}
 	
@@ -261,13 +261,13 @@ public class TactSpectrum {
 	 *         of <code>float</code> values.
 	 * @since 0.1
 	 */
-	public float[] bins (int resolution) {
+	public float[] bins (final int resolution) {
 		// Check if resolution is pow2-valid
 		if (Tact.isPowerOfTwo (resolution)) {
 			
 			// Init empty bins and define bin size
 			float[] bins = new float[resolution];
-			int binSize = length () / resolution;
+			final int binSize = length () / resolution;
 			
 			// Add up spectrum volume per bin
 			for (int i=0; i < values.length; i++) 

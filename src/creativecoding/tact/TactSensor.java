@@ -139,7 +139,7 @@ public class TactSensor implements TactConstants {
 	 * @param bufferSize size of the <code>TactSpectrum</code> buffer.
 	 * @since 0.1
 	 */
-	public TactSensor (String name, int start, int readings, int step, int bufferSize) {
+	public TactSensor (final String name, final int start, final int readings, final int step, final int bufferSize) {
 		this.name = name;
 		this.readings = readings;
 		this.start = start;
@@ -149,7 +149,7 @@ public class TactSensor implements TactConstants {
 		bias = new float[1024];
 		peak = new float[1024];
 		
-		Date date = new Date ();
+		final Date date = new Date ();
 		
 		for (int i=0; i < bufferSize; i++)
 			buffer[i] = new TactSpectrum (date.getTime (), start, readings, step);
@@ -165,7 +165,7 @@ public class TactSensor implements TactConstants {
 	 *             is taken from the sensor's signal spectrum
 	 * @since 0.1
 	 */
-	public TactSensor (String name, int start, int readings, int step) {
+	public TactSensor (final String name, final int start, final int readings, final int step) {
 		this (name, start, readings, step, DEFAULT_SPECTRUM_BUFFER_SIZE);
 	}
 	
@@ -177,7 +177,7 @@ public class TactSensor implements TactConstants {
 	 * @param readings number of signal spectrum measure points.
 	 * @since 0.1
 	 */
-	public TactSensor (String name, int start, int readings) {
+	public TactSensor (final String name, final int start, final int readings) {
 		this (name, start, readings, DEFAULT_SPECTRUM_STEP);
 	}
 	
@@ -187,7 +187,7 @@ public class TactSensor implements TactConstants {
 	 * @param name readable identifier as <code>String</code>.
 	 * @since 0.1
 	 */
-	public TactSensor (String name) {
+	public TactSensor (final String name) {
 		this (name, DEFAULT_SPECTRUM_START, DEFAULT_SPECTRUM_READINGS);
 	}
 	
@@ -212,7 +212,7 @@ public class TactSensor implements TactConstants {
 	 * @see TactSensor#latestSpectrum()
 	 * @since 0.1
 	 */
-	public void push (TactSpectrum b) {
+	public void push (final TactSpectrum b) {
 		
 		// Update buffer and shift all exisiting entries 
 		// one index forward, to add presnt at the end
@@ -269,7 +269,7 @@ public class TactSensor implements TactConstants {
 		float values[] = new float[buffer[0].length ()];
 		long time = 0;
 		
-		int start = (receivedCount < buffer.length) ? buffer.length - (int) (receivedCount) : 0;
+		final int start = (receivedCount < buffer.length) ? buffer.length - (int) (receivedCount) : 0;
 		
 		for (int i=start; i < buffer.length; i++) {
 			
@@ -387,7 +387,7 @@ public class TactSensor implements TactConstants {
 	 * @see TactSpectrum#bins(int)
 	 * @since 0.1
 	 */
-	public float[] bins (int resolution) {
+	public float[] bins (final int resolution) {
 		return latestSpectrum ().bins (resolution);
 	}
 	
@@ -477,7 +477,7 @@ public class TactSensor implements TactConstants {
 	 * @see #reset()
 	 * @simce 0.1
 	 */
-	public void readings (int readings) {
+	public void readings (final int readings) {
 		// Only perform when needed
 		if (this.readings != readings) {
 			this.readings = readings;
@@ -509,7 +509,7 @@ public class TactSensor implements TactConstants {
 	 * @see #reset()
 	 * @since 0.1
 	 */
-	public void start (int start) {
+	public void start (final int start) {
 		// Only perform when needed
 		if (this.start != start) {
 			this.start = start;
@@ -540,7 +540,7 @@ public class TactSensor implements TactConstants {
 	 * @see #reset()
 	 * @since 0.1
 	 */
-	public void step (int step) {
+	public void step (final int step) {
 		// Only perform when needed
 		if (this.step != step) {
 			this.step = step;
