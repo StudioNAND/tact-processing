@@ -154,7 +154,8 @@ public class Tact {
 			serial.clear ();
 			
 			// Start handshake process ... 
-			serial.write ("v");
+			serial.write ('V');
+			serial.write (10);
 			// Allow this response to happen within the 
 			// next two seconds ...
 			runUntil = parent.millis () + 2000;
@@ -316,11 +317,11 @@ public class Tact {
 					// A wrapped signal - the TactSpectrum
 					TactSpectrum spectrum = new TactSpectrum (parent.millis (), bufferTemp.clone (), sensors.get (sensorIndex).start (), sensors.get (sensorIndex).step ());
 					
+					// Update the designated sensor instance
+					// by assining the received spectrum.
+					sensors.get (sensorIndex).push (spectrum);
+					
 					try {
-						// Update the designated sensor instance
-						// by assining the received spectrum.
-						sensors.get (sensorIndex).push (spectrum);
-						
 						// Tell all listeners (PApplet etc.) that 
 						// there new data is available. 
 						dispatchEvent (new TactEvent (this, sensors.get (sensorIndex)));
@@ -439,7 +440,7 @@ public class Tact {
 					for (int i=0; i < sensors.size (); i++) {
 						
 						// Request values
-						serial.write ('g');
+						serial.write ('G');
 						serial.write (' ');
 						serial.write (Integer.toString (i));
 						serial.write (' ');
