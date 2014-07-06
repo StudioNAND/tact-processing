@@ -104,7 +104,7 @@ public class Tact {
 			tactEvent = parent.getClass ().getMethod ("tactEvent", new Class[] { TactEvent.class });
 		} catch (Exception e) {
 			// No such method, ignore anyway ...
-			// System.out.println ("No listener found");
+			// System.out.println ("[Tact] No listener found: \"tactEvent\"");
 		}
 	}
 	
@@ -143,9 +143,8 @@ public class Tact {
 			// First of all, clear the port.
 			serial.clear ();
 			
-			// Start handshake process, now awaiting 
-			// a "5" as response code
-			serial.write ("hi");
+			// Start handshake process ... 
+			serial.write ("v");
 			// Allow this response to happen within the 
 			// next two seconds ...
 			runUntil = parent.millis () + 2000;
@@ -158,7 +157,7 @@ public class Tact {
 			
 		}else{
 			// If Serial init went wrong...
-			System.err.println ("The provided Serial index " + serialIndex + " is out of bounds and thereby not available. Please make sure it's one of the following:");
+			System.err.println ("[Tact] The provided Serial index " + serialIndex + " is out of bounds and thereby not available. Please make sure it's one of the following:");
 			
 			// List available Serial ports
 			for (int i=0; i < Serial.list ().length; i++)
@@ -265,7 +264,7 @@ public class Tact {
 	protected void receive () {
 		while (serial.available () > 0) {
 			
-			final int b = serial.read();
+			int b = serial.read();
 			
 			if (firstByte) {
 				buffer = b;
@@ -279,22 +278,29 @@ public class Tact {
 				// If sensor connection is not established yet - still awaiting
 				// the initial handshake ...
 				if (!running) {
-					// And "5" just came in, finalizse the setup 
-					// process and set runnunig flag to active.
-					if (buffer == 5) {
+					if (buffer >= 5000) {
 						running = true;
-						System.out.println ("Tact says \"Hi5\" - Now up and running, good to go!");
+						
+						final int version = buffer - 5000;
+						
+						System.out.println ("[Tact] says \"Hi\" - Now up and running version " + version + ", good to go!");
 					}
 				}else if (buffer >= 0 && buffer < 1024) {
 					// Append to value spectrum
 					bufferTemp = PApplet.append (bufferTemp, buffer);
 					
-				}else if (buffer == 2000) {
+				}else if (buffer >= 2000 && buffer < 2999) {
+					
+					// Number of spectrum data points that are about
+					// to be transmitted from the Tact sensor
+					//final int length = buffer - 2000;
+					
 					// Clear the temporary value array
 					// to begin with a fresh list
 					bufferTemp = new float[0];
 				
-				}else if (buffer == 2001) {
+				}else if (buffer == 2999) {
+					
 					// Finish filling up value array by copying 
 					// temp version into the processable counterpart.
 					// A wrapped signal - the TactSpectrum
@@ -310,13 +316,15 @@ public class Tact {
 						dispatchEvent (new TactEvent (this, sensors.get (sensorIndex)));
 						
 					}catch (Exception e) {
-						System.err.println("Could not assign TactSpectrum to sensor with index " + sensorIndex + ".");
+						System.err.println("[Tact] Could not assign TactSpectrum to sensor with index " + sensorIndex + ".");
 					}
 					
 					bufferTemp = new float[0];
 					
-				}else if (buffer >= 3000 && buffer < 3008) {
+				}else if (buffer >= 3000 && buffer < 3999) {
 					sensorIndex = buffer - 3000;
+				}else{
+					System.out.println ("[Tact] Received unknown byte " + buffer);
 				}
 			    
 				// Rest byte-buffer
@@ -337,7 +345,7 @@ public class Tact {
 			try {
 				tactEvent.invoke (parent, new Object[] { event });
 			}catch (Exception ex) {
-				System.err.println("Disabling tacteEvent() because of an error");
+				System.err.println("[Tact] Disabling tacteEvent() because of an error");
 				ex.printStackTrace ();
 				tactEvent = null;
 			}
@@ -403,7 +411,7 @@ public class Tact {
 		public void run () {
 			
 			if (sensors.size () == 0) {
-				System.err.println ("Tact updates stopped. There are no sensors registered. Create one using tact.addSensor(\"tact1\")");
+				System.err.println ("[Tact] updates stopped. There are no sensors registered. Create one using tact.addSensor(\"tact1\")");
 				stop();
 				return;
 			}
@@ -422,14 +430,14 @@ public class Tact {
 						
 						// Request values
 						serial.write ('g');
+						serial.write (' ');
 						serial.write (Integer.toString (i));
-						serial.write (';');
+						serial.write (' ');
 						serial.write (Integer.toString (sensors.get (i).start ()));
-						serial.write (';');
+						serial.write (' ');
 						serial.write (Integer.toString (sensors.get (i).readings ()));
-						serial.write (';');
+						serial.write (' ');
 						serial.write (Integer.toString (sensors.get (i).step ()));
-						serial.write (';');
 						serial.write (10);
 						
 						// Process response ...
@@ -453,7 +461,7 @@ public class Tact {
 			// Cancel this thread if the sensor connection has not been 
 			// initialised so far and the designated time span is up.
 			if (!running && parent.millis () >= runUntil) {
-				System.err.println ("Tact sensor is not responding. Please check the connection and make sure that it is running the right Arduino sketch.");
+				System.err.println ("[Tact] Sensor is not responding. Please check the connection and make sure that it is running the right Arduino sketch.");
 				// Destroy thread :(
 				stop();
 			}
