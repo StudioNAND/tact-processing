@@ -102,10 +102,20 @@ public class Tact {
 		
 		try {
 			tactEvent = parent.getClass ().getMethod ("tactEvent", new Class[] { TactEvent.class });
+			// Registers PApplet on exit listener
+			// to stop serial communication
+			parent.registerMethod ("dispose", this);
 		} catch (Exception e) {
 			// No such method, ignore anyway ...
 			// System.out.println ("[Tact] No listener found: \"tactEvent\"");
 		}
+	}
+	
+	/**
+	 * Called by PApplet on exit to stop sensor communication.
+	 */
+	public void dispose () {
+		stop();
 	}
 	
 	/**
