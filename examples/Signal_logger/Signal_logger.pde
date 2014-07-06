@@ -129,14 +129,7 @@ void writeToFile() {
   }
 }
 
-// Stop and close the connection
-// to the Tact sensor
-void exit() {
-  // Stop the sensor, after this 
-  // point there won't be any more 
-  // tactEvents()
-  tact.stop();
-  
+void stop() {
   // Write the rest of the buffer
   // to the CSV log
   writeToFile();

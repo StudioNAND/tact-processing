@@ -55,9 +55,3 @@ void draw () {
 void tactEvent (TactEvent e) {
   println ("Sensor bias: " + e.sensor.bias());
 }
-
-// Stop Tact Serial communication
-// when sketch shuts down.
-void exit () {
-  tact.stop ();
-}

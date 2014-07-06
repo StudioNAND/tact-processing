@@ -34,10 +34,3 @@ void draw() {
   // Draw ellipse in sketch center
   ellipse (width/2, height/2, diameter, diameter);
 }
-
-// Stop and close the connection
-// to the Tact sensor when the 
-// sketch shuts down
-void exit() {
-  tact.stop();
-}

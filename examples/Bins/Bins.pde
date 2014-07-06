@@ -96,9 +96,3 @@ void keyPressed () {
     numberOfBins = 2;
   }
 }
-
-// Stop and close the connection
-// to the Tact sensor
-void exit() {
-  tact.stop ();
-}

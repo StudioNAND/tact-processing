@@ -68,9 +68,3 @@ void drawGraph (float[] values, float yGraph, float heightGraph) {
   // End drawing the line
   endShape ();
 }
-
-// Stop Tact Serial communication
-// when sketch shuts down.
-void exit () {
-  tact.stop ();
-}

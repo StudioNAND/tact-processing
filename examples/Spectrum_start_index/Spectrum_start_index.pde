@@ -76,9 +76,3 @@ void keyPressed () {
   
   println("Starting now at " + sensor.start());
 }
-
-// Stop Tact Serial communication
-// when sketch shuts down.
-void exit () {
-  tact.stop();
-}

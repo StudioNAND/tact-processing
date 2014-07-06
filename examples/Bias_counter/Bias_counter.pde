@@ -83,9 +83,3 @@ void draw() {
   textSize(190);
   text(counter, (width - textWidth(str(counter)))/2 , height/2 + 80);
 }
-
-// Stop and close the connection
-// to the Tact sensor
-void exit() {
-  tact.stop();
-}

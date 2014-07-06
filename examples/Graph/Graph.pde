@@ -61,9 +61,3 @@ public void keyReleased () {
   // either dark or bright ...
   TactGraph.theme = (black) ? TactGraph.bright : TactGraph.dark;
 }
-
-// Stop and close the connection
-// to the Tact sensor
-public void stop () {
-  tact.stop ();
-}
