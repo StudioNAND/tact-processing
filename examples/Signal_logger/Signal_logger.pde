@@ -50,7 +50,7 @@ void setup() {
   // Create the empty CSV document 
   // (existing once will be replaced)
   try {
-    writer = new FileWriter(sketchPath("data/" + sensor.name() + ".csv"));
+    writer = new FileWriter(sketchPath("data/sensor-" + sensor.pin() + ".csv"));
     writer.close();
   }catch(Exception e) {
     println("Oh boy - failed while trying to create the csv...");
@@ -117,7 +117,7 @@ void writeToFile() {
   // to the end of the file and finally appending it 
   // with the recorded rows.
   try {
-    writer = new FileWriter(sketchPath("data/" + sensor.name() + ".csv"), true);
+    writer = new FileWriter(sketchPath("data/sensor-" + sensor.pin() + ".csv"), true);
     writer.write("\n" + join(bufferCopy, "\n"));
     writer.close();
     
