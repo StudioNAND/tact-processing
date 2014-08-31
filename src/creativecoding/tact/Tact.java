@@ -68,7 +68,7 @@ public class Tact {
 	
 	/**
 	 * List of all created sensors.
-	 * @see #addSensor(String)
+	 * @see #addSensor(int)
 	 * @since 0.1
 	 */
 	public HashMap<Integer, TactSensor> sensors;
@@ -181,7 +181,7 @@ public class Tact {
 	/**
 	 * Adds a new Tact sensor.
 	 * 
-	 * @param sensor pin which will be monitored.
+	 * @param pin which will be monitored.
 	 * @return the instantiated sensor.
 	 * @since 0.1
 	 */
@@ -194,7 +194,7 @@ public class Tact {
 	/**
 	 * Adds a new Tact sensor.
 	 * 
-	 * @param sensor pin which will be monitored.
+	 * @param pin which will be monitored.
 	 * @param start index where signal reading are taken from.
 	 * @param readings total number of measurements taken 
 	 *        from the signal spectrum.
@@ -210,7 +210,7 @@ public class Tact {
 	/**
 	 * Adds a new Tact sensor.
 	 * 
-	 * @param sensor pin which will be monitored.
+	 * @param pin which will be monitored.
 	 * @param start index where signal readings are taken from.
 	 * @param readings total number of measurements taken from 
 	 *        the sensor's signal spectrum.
@@ -227,8 +227,7 @@ public class Tact {
 	/**
 	 * Adds a new Tact sensor.
 	 * 
-	 * @param sensor pin which will be monitored. Enter 0 when 
-	 *        running a single 
+	 * @param pin which will be monitored.
 	 * @param start index where signal readings are taken from.
 	 * @param length total number or measurements taken from 
 	 *        the sensor's signal spectrum.

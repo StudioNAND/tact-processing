@@ -36,7 +36,7 @@ import creativecoding.tact.TactConstants;
  * </pre>
  * 
  * @author Steffen Fiedler, <a href="http://www.nand.io" target="_blank">www.nand.io</a>
- * @see Tact#addSensor(String)
+ * @see Tact#addSensor(int)
  * @since 0.1
  */
 public class TactSensor implements TactConstants {
@@ -82,7 +82,7 @@ public class TactSensor implements TactConstants {
 	 * and can be modified when creating the sensor.
 	 * <pre>
 	 * // Creates a sensor with a buffer size of 64
-	 * tact.addSensor("mySensor-A", 44, 32, 2, 64);
+	 * tact.addSensor(0, 44, 32, 2, 64);
 	 * </pre>
 	 * 
 	 * @see #length()
@@ -188,7 +188,7 @@ public class TactSensor implements TactConstants {
 	/**
 	 * Creates a Tact sensor instance.
 	 * 
-	 * @param sensor pin which will be monitored.
+	 * @param pin which will be monitored.
 	 * @since 0.1
 	 */
 	public TactSensor (final int pin) {
@@ -209,7 +209,6 @@ public class TactSensor implements TactConstants {
 	 * 
 	 * @param b the buffer that is about to be assigend to the existing set of 
 	 *          TactSpectrum instances which have been recorded before.
-	 * @return <code>void</code>
 	 * @see #bias
 	 * @see #buffer
 	 * @see #peak
@@ -296,10 +295,10 @@ public class TactSensor implements TactConstants {
 	 * This term has been defined with the instantiation 
 	 * of the sensor.<br />
 	 * <br />
-	 * <code>sensor = Tact.addSensor("myTact-A");</code>
+	 * <code>sensor = Tact.addSensor(0);</code>
 	 * 
 	 * @return pin of the sensor as <code>String</code>
-	 * @see Tact#addSensor(String)
+	 * @see Tact#addSensor(int)
 	 * @since 0.1
 	 */
 	public int pin () {
@@ -389,8 +388,7 @@ public class TactSensor implements TactConstants {
 	/**
 	 * Signal <code>bins</code> of the most recent spectrum.
 	 * 
-	 * @param resolution 
-	 * @return
+	 * @param resolution as number of bins.
 	 * @see TactSpectrum#bins(int)
 	 * @since 0.1
 	 */
@@ -437,7 +435,7 @@ public class TactSensor implements TactConstants {
 	 * @return minimum bias value measured so far as <code>float</code>.
 	 * @see #maxBias()
 	 * @see #resetBias()
-	 * @ince 0.1
+	 * @since 0.1
 	 */
 	public float minBias () {
 		return biasMin;
@@ -482,7 +480,7 @@ public class TactSensor implements TactConstants {
 	 * @param readings number of measurepoints taken from the 
 	 *                 signal as <code>int</code>.
 	 * @see #reset()
-	 * @simce 0.1
+	 * @since 0.1
 	 */
 	public void readings (final int readings) {
 		// Only perform when needed

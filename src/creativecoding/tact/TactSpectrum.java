@@ -112,7 +112,7 @@ public class TactSpectrum {
 	/**
 	 * Size of the represented signal spectrum.
 	 * 
-	 * @return 
+	 * @return Spectrum length as int.
 	 * @see #values
 	 * @since 0.1
 	 */
