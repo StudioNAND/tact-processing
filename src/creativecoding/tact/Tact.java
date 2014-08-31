@@ -20,14 +20,13 @@ package creativecoding.tact;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
 import creativecoding.tact.TactSpectrum;
 import creativecoding.tact.TactEvent;
 import creativecoding.tact.TactListener;
 import creativecoding.tact.TactSensor;
-
 import processing.core.*;
 import processing.serial.Serial;
 
@@ -72,7 +71,7 @@ public class Tact {
 	 * @see #addSensor(String)
 	 * @since 0.1
 	 */
-	public List<TactSensor> sensors;
+	public HashMap<Integer, TactSensor> sensors;
 	
 	/**
 	 * Point in time until update thread shall be running irrespectively 
@@ -98,7 +97,7 @@ public class Tact {
 	 */
 	public Tact (PApplet parent) {
 		this.parent = parent;
-		sensors = new ArrayList<TactSensor>();
+		sensors = new HashMap<Integer, TactSensor>();
 		
 		try {
 			tactEvent = parent.getClass ().getMethod ("tactEvent", new Class[] { TactEvent.class });
@@ -182,36 +181,36 @@ public class Tact {
 	/**
 	 * Adds a new Tact sensor.
 	 * 
-	 * @param name sensor identifier as <code>String</code>.
+	 * @param sensor pin which will be monitored.
 	 * @return the instantiated sensor.
 	 * @since 0.1
 	 */
-	public TactSensor addSensor(final String name) {
-		TactSensor s = new TactSensor (name);
-		sensors.add (s);
+	public TactSensor addSensor(final int pin) {
+		TactSensor s = new TactSensor (pin);
+		sensors.put (pin, s);
 		return s;
 	}
 	
 	/**
 	 * Adds a new Tact sensor.
 	 * 
-	 * @param name sensor identifier as <code>String</code>.
+	 * @param sensor pin which will be monitored.
 	 * @param start index where signal reading are taken from.
 	 * @param readings total number of measurements taken 
 	 *        from the signal spectrum.
 	 * @return sensor instance as <code>TactSensor</code>.
 	 * @since 0.1
 	 */
-	public TactSensor addSensor (final String name, final int start, final int readings) {
-		TactSensor s = new TactSensor (name, start, readings);
-		sensors.add (s);
+	public TactSensor addSensor (final int pin, final int start, final int readings) {
+		TactSensor s = new TactSensor (pin, start, readings);
+		sensors.put (pin, s);
 		return s;
 	}
 	
 	/**
 	 * Adds a new Tact sensor.
 	 * 
-	 * @param name sensor identifier as <code>String</code>.
+	 * @param sensor pin which will be monitored.
 	 * @param start index where signal readings are taken from.
 	 * @param readings total number of measurements taken from 
 	 *        the sensor's signal spectrum.
@@ -219,16 +218,17 @@ public class Tact {
 	 * @return sensor instance as <code>TactSensor</code>.
 	 * @since 0.1
 	 */
-	public TactSensor addSensor (final String name, final int start, final int readings, final int step) {
-		TactSensor s = new TactSensor (name, start, readings, step);
-		sensors.add (s);
+	public TactSensor addSensor (final int pin, final int start, final int readings, final int step) {
+		TactSensor s = new TactSensor (pin, start, readings, step);
+		sensors.put (pin, s);
 		return s;
 	}
 	
 	/**
 	 * Adds a new Tact sensor.
 	 * 
-	 * @param name identifier as <code>String</code>.
+	 * @param sensor pin which will be monitored. Enter 0 when 
+	 *        running a single 
 	 * @param start index where signal readings are taken from.
 	 * @param length total number or measurements taken from 
 	 *        the sensor's signal spectrum.
@@ -238,9 +238,9 @@ public class Tact {
 	 * @return sensor instance as <code>TactSensor</code>.
 	 * @since 0.1
 	 */
-	public TactSensor addSensor (final String name, final int start, final int length, final int step, final int bufferSize) {
-		TactSensor s = new TactSensor (name, start, length, step, bufferSize);
-		sensors.add (s);
+	public TactSensor addSensor (final int pin, final int start, final int length, final int step, final int bufferSize) {
+		TactSensor s = new TactSensor (pin, start, length, step, bufferSize);
+		sensors.put (pin, s);
 		return s;
 	}
 	
@@ -437,7 +437,7 @@ public class Tact {
 				if (running) {
 					
 					// For each single sensor ...
-					for (int i=0; i < sensors.size (); i++) {
+					for (Integer i : sensors.keySet ()) {
 						
 						// Request values
 						serial.write ('G');

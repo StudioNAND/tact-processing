@@ -32,7 +32,7 @@ import creativecoding.tact.TactConstants;
  * The sensor instance will also store the 64 most recent <code>TactSpectrum</code> 
  * in its <code>buffer</code>.</p>
  * <pre>
- * TactSensor s = tact.addSensor("myTact-A", 44, 32, 2, 64);
+ * TactSensor s = tact.addSensor(0, 44, 32, 2, 64);
  * </pre>
  * 
  * @author Steffen Fiedler, <a href="http://www.nand.io" target="_blank">www.nand.io</a>
@@ -42,9 +42,9 @@ import creativecoding.tact.TactConstants;
 public class TactSensor implements TactConstants {
 	
 	/**
-	 * Readable identifier as <code>String</code>.
+	 * Sensor pin which will be monitored.
 	 */
-	private String name;
+	private int pin;
 	
 	/**
 	 * Total number of received sensor updates.
@@ -132,7 +132,7 @@ public class TactSensor implements TactConstants {
 	/**
 	 * Creates a Tact sensor instance.
 	 * 
-	 * @param name readable idendifier as <code>String</code>.
+	 * @param pin sensor pin which will be monitored.
 	 * @param start of the signal spectrum.
 	 * @param readings of the signal spectrum.
 	 * @param step number of signal measures after each a reading 
@@ -140,8 +140,8 @@ public class TactSensor implements TactConstants {
 	 * @param bufferSize size of the <code>TactSpectrum</code> buffer.
 	 * @since 0.1
 	 */
-	public TactSensor (final String name, final int start, final int readings, final int step, final int bufferSize) {
-		this.name = name;
+	public TactSensor (final int pin, final int start, final int readings, final int step, final int bufferSize) {
+		this.pin = pin;
 		this.readings = readings;
 		this.start = start;
 		this.step = step;
@@ -162,37 +162,37 @@ public class TactSensor implements TactConstants {
 	/**
 	 * Creates a Tact sensor instance.
 	 * 
-	 * @param name readable identifier as <code>String</code>.
+	 * @param pin sensor pin which will be monitored.
 	 * @param start of the signal spectrum.
 	 * @param readings of the signal spectrum.
 	 * @param step number of signal measures after each a reading 
 	 *             is taken from the sensor's signal spectrum
 	 * @since 0.1
 	 */
-	public TactSensor (final String name, final int start, final int readings, final int step) {
-		this (name, start, readings, step, DEFAULT_SPECTRUM_BUFFER_SIZE);
+	public TactSensor (final int pin, final int start, final int readings, final int step) {
+		this (pin, start, readings, step, DEFAULT_SPECTRUM_BUFFER_SIZE);
 	}
 	
 	/**
 	 * Creates a Tact sensor instance.
 	 * 
-	 * @param name readable identifier as <code>String</code>.
+	 * @param pin sensor pin which will be monitored.
 	 * @param start of the signal spectrum.
 	 * @param readings number of signal spectrum measure points.
 	 * @since 0.1
 	 */
-	public TactSensor (final String name, final int start, final int readings) {
-		this (name, start, readings, DEFAULT_SPECTRUM_STEP);
+	public TactSensor (final int pin, final int start, final int readings) {
+		this (pin, start, readings, DEFAULT_SPECTRUM_STEP);
 	}
 	
 	/**
 	 * Creates a Tact sensor instance.
 	 * 
-	 * @param name readable identifier as <code>String</code>.
+	 * @param sensor pin which will be monitored.
 	 * @since 0.1
 	 */
-	public TactSensor (final String name) {
-		this (name, DEFAULT_SPECTRUM_START, DEFAULT_SPECTRUM_READINGS);
+	public TactSensor (final int pin) {
+		this (pin, DEFAULT_SPECTRUM_START, DEFAULT_SPECTRUM_READINGS);
 	}
 	
 	/**
@@ -298,12 +298,12 @@ public class TactSensor implements TactConstants {
 	 * <br />
 	 * <code>sensor = Tact.addSensor("myTact-A");</code>
 	 * 
-	 * @return name of the sensor as <code>String</code>
+	 * @return pin of the sensor as <code>String</code>
 	 * @see Tact#addSensor(String)
 	 * @since 0.1
 	 */
-	public String name () {
-		return name;
+	public int pin () {
+		return pin;
 	}
 	
 	/**
