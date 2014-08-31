@@ -45,7 +45,7 @@ void setup() {
   
   // Create a Tact sensor and tell it which parts 
   // to get of the sensor's signal spectrum.
-  sensor = tact.addSensor("myTact-A", 44, 32);
+  sensor = tact.addSensor(0, 44, 32);
   
   // Create the empty CSV document 
   // (existing once will be replaced)

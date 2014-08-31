@@ -28,7 +28,7 @@ void setup() {
   // For each of those inputs
   for (int i=0; i < sensorNum; i++) {
     // Initialize sensor
-    sensors[i] = tact.addSensor ("myTact-" + i, 48, 32, 2);
+    sensors[i] = tact.addSensor (i, 48, 32, 2);
   }
   
   // Start listening on serial port 5

@@ -20,7 +20,7 @@ void setup() {
   
   // Create a Tact sensor and tell Tact which parts 
   // to get of the sensor's signal spectrum.
-  sensor = tact.addSensor("myTact-A", 44, 32);
+  sensor = tact.addSensor(0, 44, 32);
   
   // Start listing on Serial port 5
   tact.start(5);
