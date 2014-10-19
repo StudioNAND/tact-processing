@@ -14,13 +14,14 @@ TactSensor sensor;
 void setup() {
   
   size(800, 600);
+  fill (255);
   
   // Create new Tact toolkit
   tact = new Tact(this);
   
   // Create a sensor and tell Tact only to return 
-  // the bias value for that field.
-  sensor = tact.addSensor(0, 44, 32, Tact.BIAS);
+  // the peak value for that field.
+  sensor = tact.addSensor(0, 44, 32, Tact.PEAK);
   
   // Start listing on Serial port 5
   tact.start(5);
@@ -29,8 +30,10 @@ void setup() {
 void draw() {
   // Clear background
   background(0);
-  // Define diameter based on sensor bias
-  float diameter = sensor.bias() * min(width, height);
-  // Draw ellipse in sketch center
-  ellipse (width/2, height/2, diameter, diameter);
+  
+  // Define scale based on sensor bias
+  float rectWidth = sensor.peak() * width;
+  
+  // Draw rectangle
+  rect (0, 0, rectWidth, height);
 }
