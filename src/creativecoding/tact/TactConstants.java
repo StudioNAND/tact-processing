@@ -27,6 +27,26 @@ package creativecoding.tact;
 public interface TactConstants {
 	
 	/**
+	 * 
+	 */
+	public static final String BIAS = "bias";
+	
+	/**
+	 * 
+	 */
+	public static final String BIAS_PEAK = "bias and peak";
+	
+	/**
+	 * 
+	 */
+	public static final String PEAK = "peak";
+	
+	/**
+	 * 
+	 */
+	public static final String SPECTRUM = "spectrum";
+	
+	/**
 	 * Constant for the <code>TactSpectrum</code> signal minimum.
 	 */
 	public static final float AMPLITUDE_MIN = 0;
@@ -39,4 +59,28 @@ public interface TactConstants {
 	public static final int DEFAULT_SPECTRUM_READINGS = 32;
 	public static final int DEFAULT_SPECTRUM_START = 32;
 	public static final int DEFAULT_SPECTRUM_STEP = 1;
+	
+	public static final String DEFAULT_MODE = SPECTRUM;
+	
+	public static final int PROTOCOL_COMMAND_COUNT_LIMIT = 10;
+	
+	public static final int PROTOCOL_COMMAND_SPECTRUM = 0;
+	
+	public static final int PROTOCOL_COMMAND_PEAK = 1;
+	
+	public static final int PROTOCOL_COMMAND_BIAS = 2;
+	
+	public static final int PROTOCOL_SENSOR_INDEX_LIMIT = 64;
+	
+	public static final int PROTOCOL_TAG_COMMAND_ID = 1088;
+	
+	public static final int PROTOCOL_TAG_END_OF_TRANSMISSION = 2123;
+	
+	public static final int PROTOCOL_TAG_SENSOR_INDEX = 1024;
+
+	public static final int PROTOCOL_TAG_VALUE_COUNT = 1098;
+
+	public static final int PROTOCOL_TAG_VERSION = 2124;
+
+	public static final int PROTOCOL_VALUE_COUNT_LIMIT = 1024;
 }

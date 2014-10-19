@@ -128,6 +128,11 @@ public class TactSensor implements TactConstants {
 	 */
 	private float peakMax = Float.MIN_VALUE;
 	
+	/**
+	 * Sensor data request mode when communicating with the sensor: 
+	 * {@link TactConstants#SPECTRUM}, {@link TactConstants#BIAS}, {@link TactConstants#PEAK}.
+	 */
+	private String mode;
 	
 	/**
 	 * Creates a Tact sensor instance.
@@ -140,11 +145,12 @@ public class TactSensor implements TactConstants {
 	 * @param bufferSize size of the <code>TactSpectrum</code> buffer.
 	 * @since 0.1
 	 */
-	public TactSensor (final int pin, final int start, final int readings, final int step, final int bufferSize) {
+	public TactSensor (final int pin, final int start, final int readings, final int step, final int bufferSize, final String mode) {
 		this.pin = pin;
 		this.readings = readings;
 		this.start = start;
 		this.step = step;
+		this.mode = mode;
 		
 		buffer = new TactSpectrum[bufferSize];
 		bias = new float[1024];
@@ -163,14 +169,56 @@ public class TactSensor implements TactConstants {
 	 * Creates a Tact sensor instance.
 	 * 
 	 * @param pin sensor pin which will be monitored.
+	 * @param start index of the signal spectrum.
+	 * @param readings number of signal spectrum data points.
+	 * @param step width between readings.
+	 * @param bufferSize size of the <code>TactSpectrum</code> buffer.
+	 * @since 0.2
+	 */
+	public TactSensor (final int pin, final int start, final int readings, final int step, final int bufferSize) {
+		this (pin, start, readings, step, bufferSize, DEFAULT_MODE);
+	}
+	
+	/**
+	 * Creates a Tact sensor instance.
+	 * 
+	 * @param pin sensor pin which will be monitored.
+	 * @param start of the signal spectrum.
+	 * @param readings number of signal spectrum data points.
+	 * @param step width between readings.
+	 * @param mode request type when communicating with the sensor: 
+	 * {@link TactConstants#SPECTRUM}, {@link TactConstants#BIAS}, {@link TactConstants#PEAK}.
+	 * @since 0.2
+	 */
+	public TactSensor (final int pin, final int start, final int readings, final int step, final String mode) {
+		this (pin, start, readings, step, DEFAULT_SPECTRUM_BUFFER_SIZE, mode);
+	}
+	
+	/**
+	 * Creates a Tact sensor instance.
+	 * 
+	 * @param pin sensor pin which will be monitored.
 	 * @param start of the signal spectrum.
 	 * @param readings of the signal spectrum.
-	 * @param step number of signal measures after each a reading 
-	 *             is taken from the sensor's signal spectrum
+	 * @param step width between readings.
 	 * @since 0.1
 	 */
 	public TactSensor (final int pin, final int start, final int readings, final int step) {
-		this (pin, start, readings, step, DEFAULT_SPECTRUM_BUFFER_SIZE);
+		this (pin, start, readings, step, DEFAULT_SPECTRUM_BUFFER_SIZE, DEFAULT_MODE);
+	}
+	
+	/**
+	 * Creates a Tact sensor instance.
+	 * 
+	 * @param pin sensor pin which will be monitored.
+	 * @param start index of the signal spectrum.
+	 * @param readings number of signal spectrum data points.
+	 * @param mode request type when communicating with the sensor: 
+	 * {@link TactConstants#SPECTRUM}, {@link TactConstants#BIAS}, {@link TactConstants#PEAK}.
+	 * @since 0.2
+	 */
+	public TactSensor (final int pin, final int start, final int readings, final String mode) {
+		this (pin, start, readings, DEFAULT_SPECTRUM_STEP, mode);
 	}
 	
 	/**
@@ -183,6 +231,18 @@ public class TactSensor implements TactConstants {
 	 */
 	public TactSensor (final int pin, final int start, final int readings) {
 		this (pin, start, readings, DEFAULT_SPECTRUM_STEP);
+	}
+	
+	/**
+	 * Creates a Tact Sensor instance.
+	 * 
+	 * @param pin sensor pin which will be monitored.
+	 * @param mode request type when communicating with the sensor: 
+	 * {@link TactConstants#SPECTRUM}, {@link TactConstants#BIAS}, {@link TactConstants#PEAK}.
+	 * @since 0.2
+	 */
+	public TactSensor (final int pin, final String mode) {
+		this (pin, DEFAULT_SPECTRUM_START, DEFAULT_SPECTRUM_READINGS, mode);
 	}
 	
 	/**
@@ -223,32 +283,104 @@ public class TactSensor implements TactConstants {
 			buffer[i-1] = buffer[i];
 		buffer[buffer.length - 1] = b;
 		
-		// Shift existing bias histrogram
-		for (int i=1; i < bias.length; i++)
-			bias[i-1] = bias[i];
-		// Add present buffer-bias
-		bias[bias.length - 1] = b.bias ();
-		
-		if (biasMax < b.bias ())
-			biasMax = b.bias ();
-		
-		if (biasMin > b.bias ())
-			biasMin = b.bias ();
-		
-		if (peakMax < b.peak ())
-			peakMax = b.peak ();
-		
-		if (peakMin > b.peak ())
-			peakMin = b.peak ();
-		
-		// Shift exisitng peak histogram
-		for (int i=1; i < peak.length; i++)
-			peak[i-1] = peak[i];
-		// Add present buffer-peak
-		peak[peak.length - 1] = b.peak ();
+		pushBias (b.bias ());
+		pushPeak (b.peak ());
 		
 		// Level up received counter
 		receivedCount++;
+	}
+	
+	/**
+	 * 
+	 * @param bias
+	 * @see #bias
+	 * @since 0.2
+	 */
+	public void pushBias (final float bias) {
+		// Shift existing bias histrogram
+		for (int i=1; i < this.bias.length; i++)
+			this.bias[i-1] = this.bias[i];
+		// Add present buffer-bias
+		this.bias[this.bias.length - 1] = bias;
+
+		if (biasMax < bias)
+			biasMax = bias;
+		
+		if (biasMin > bias)
+			biasMin = bias;
+	}
+	
+	/**
+	 * 
+	 * @param peak
+	 * @see #peak
+	 * @since 0.2
+	 */
+	public void pushPeak (final float peak) {
+		// Shift exisitng peak histogram
+		for (int i=1; i < this.peak.length; i++)
+			this.peak[i-1] = this.peak[i];
+		// Add present buffer-peak
+		this.peak[this.peak.length - 1] = peak;
+		
+		if (peakMax < peak)
+			peakMax = peak;
+		
+		if (peakMin > peak)
+			peakMin = peak;
+	}
+	
+	/**
+	 * Data request and transfer mode between implementation and sensor.
+	 * <ul>
+	 * <li>{@link TactConstants#BIAS}, bias value only</li>
+	 * <li>{@link TactConstants#PEAK}, peak value only</li>
+	 * <li>{@link TactConstants#SPECTRUM}, full spectrum. 
+	 * Including information about bias and peak.</li>
+	 * </ul>
+	 * 
+	 * @return Data transfer mode as String.
+	 */
+	public String mode () {
+		return mode;
+	}
+	
+	/**
+	 * Flag if instance requests {@link #bias} data from sensor. 
+	 * 
+	 * @see #bias
+	 * @see #bias()
+	 * @return Returns <code>true</code> when bias data is
+	 * available, otheriwse <code>false</code>.
+	 * @since 0.2
+	 */
+	public boolean hasBias () {
+		return !mode.equalsIgnoreCase (PEAK);
+	}
+	
+	/**
+	 * Flag if instance requests {@link #peak} data from sensor.
+	 * 
+	 * @see #peak
+	 * @see #peak()
+	 * @return Returns <code>true</code> when peak data is
+	 * available, otherwise <code>false</code>.
+	 * @since 0.2
+	 */
+	public boolean hasPeak () {
+		return !mode.equalsIgnoreCase (BIAS);
+	}
+	
+	/**
+	 * Flag if instance requests full specturm data from sensor.
+	 * 
+	 * @see #buffer
+	 * @return Returns <code>true</code> when spectrum data is
+	 * available, otherwise <code>false</code>.
+	 * @since 0.2
+	 */
+	public boolean hasSpectrum () {
+		return mode.equalsIgnoreCase (SPECTRUM);
 	}
 	
 	/**
@@ -364,14 +496,14 @@ public class TactSensor implements TactConstants {
 	}
 	
 	/**
-	 * Signal <code>bias</code> of the most recent spectrum.  
+	 * Signal <code>bias</code> of the most recent spectrum.
 	 * 
 	 * @return present sensor bias as <code>float</code> value.
 	 * @see TactSpectrum#bias()
 	 * @since 0.1
 	 */
 	public float bias () {
-		return latestSpectrum().bias();
+		return bias[bias.length - 1];
 	}
 	
 	/**
@@ -382,7 +514,7 @@ public class TactSensor implements TactConstants {
 	 * @since 0.1
 	 */
 	public float peak () {
-		return latestSpectrum().max() / AMPLITUDE_MAX;
+		return peak[peak.length - 1];
 	}
 	
 	/**

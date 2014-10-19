@@ -36,7 +36,7 @@ import processing.serial.Serial;
  * @author Steffen Fiedler, <a href="http://www.nand.io" target="_blank">www.nand.io</a>
  * @since 0.1
  */
-public class Tact {
+public class Tact implements TactConstants {
 	
 	/**
 	 * Constant for the default baud rate.
@@ -48,6 +48,7 @@ public class Tact {
 	private int buffer = 0;
 	private boolean firstByte = true;
 	
+	private int commandType = -1;
 	private int sensorIndex = 0;
 	private float[] bufferTemp = new float[0];
 	
@@ -195,14 +196,47 @@ public class Tact {
 	 * Adds a new Tact sensor.
 	 * 
 	 * @param pin which will be monitored.
+	 * @param mode request type when communicating with the sensor: 
+	 * {@link TactConstants#SPECTRUM}, {@link TactConstants#BIAS}, {@link TactConstants#PEAK}.
+	 * @return the instantiated sensor as {@link TactSensor}.
+	 * @since 0.2
+	 */
+	public TactSensor addSensor(final int pin, final String mode) {
+		TactSensor s = new TactSensor (pin, mode);
+		sensors.put (pin, s);
+		return s;
+	}
+	
+	/**
+	 * Adds a new Tact sensor.
+	 * 
+	 * @param pin which will be monitored.
 	 * @param start index where signal reading are taken from.
 	 * @param readings total number of measurements taken 
 	 *        from the signal spectrum.
-	 * @return sensor instance as <code>TactSensor</code>.
+	 * @return the instantiated sensor as {@link TactSensor}.
 	 * @since 0.1
 	 */
 	public TactSensor addSensor (final int pin, final int start, final int readings) {
 		TactSensor s = new TactSensor (pin, start, readings);
+		sensors.put (pin, s);
+		return s;
+	}
+	
+	/**
+	 * Adds a new Tact Sensor.
+	 * 
+	 * @param pin which will be monitored.
+	 * @param start index where signal readings are taken from.
+	 * @param readings total number of measurements taken from
+	 * the signal spectrum.
+	 * @param mode request type when communicating with the sensor: 
+	 * {@link TactConstants#SPECTRUM}, {@link TactConstants#BIAS}, {@link TactConstants#PEAK}.
+	 * @return the instantiated sensor as {@link TactSensor}.
+	 * @since 0.2
+	 */
+	public TactSensor addSensor (final int pin, final int start, final int readings, final String mode) {
+		TactSensor s = new TactSensor (pin, start, readings, mode);
 		sensors.put (pin, s);
 		return s;
 	}
@@ -225,20 +259,59 @@ public class Tact {
 	}
 	
 	/**
+	 * 
+	 * @param pin which will be monitored.
+	 * @param start index where signal readings are taken from.
+	 * @param readings total number of measurements taken from 
+	 * 		  the sensors's signal spectrum.
+	 * @param step width between measure points.
+	 * @param mode request type when communicating with the sensor: 
+	 * 		  {@link TactConstants#SPECTRUM}, {@link TactConstants#BIAS}, {@link TactConstants#PEAK}.
+	 * @return sensor instance as {@link TactSensor}.
+	 * @since 0.2
+	 */
+	public TactSensor addSensor (final int pin, final int start, final int readings, final int step, final String mode) {
+		TactSensor s = new TactSensor (pin, start, readings, step, mode);
+		sensors.put (pin, s);
+		return s;
+	}
+	
+	/**
 	 * Adds a new Tact sensor.
 	 * 
 	 * @param pin which will be monitored.
 	 * @param start index where signal readings are taken from.
-	 * @param length total number or measurements taken from 
+	 * @param length total number of measurements taken from 
 	 *        the sensor's signal spectrum.
 	 * @param step width between measure points.
 	 * @param bufferSize number stored <code>TactSpectrum</code> 
 	 *        instances that previously have been received.
-	 * @return sensor instance as <code>TactSensor</code>.
+	 * @return sensor instance as {@link TactSensor}.
 	 * @since 0.1
 	 */
 	public TactSensor addSensor (final int pin, final int start, final int length, final int step, final int bufferSize) {
 		TactSensor s = new TactSensor (pin, start, length, step, bufferSize);
+		sensors.put (pin, s);
+		return s;
+	}
+	
+	/**
+	 * Adds a new Tact sensor.
+	 * 
+	 * @param pin which will be monitored.
+	 * @param start index where signal readings are taken from.
+	 * @param length total number of measurements taken from 
+	 * the sensor's signal spectrum.
+	 * @param step whith between measure points.
+	 * @param bufferSize number of stored {@link TactSpectrum} 
+	 * instances that previously have been received.
+	 * @param mode request type when communicating with the sensor: 
+	 * {@link TactConstants#SPECTRUM}, {@link TactConstants#BIAS}, {@link TactConstants#PEAK}.
+	 * @return sensor instance as {@link TactSensor}.
+	 * @since 0.2
+	 */
+	public TactSensor addSensor (final int pin, final int start, final int length, final int step, final int bufferSize, final String mode) {
+		TactSensor s = new TactSensor (pin, start, length, step, bufferSize, mode);
 		sensors.put (pin, s);
 		return s;
 	}
@@ -288,41 +361,61 @@ public class Tact {
 				// If sensor connection is not established yet - still awaiting
 				// the initial handshake ...
 				if (!running) {
-					if (buffer >= 5000) {
+					if (buffer >= PROTOCOL_TAG_VERSION) {
 						running = true;
 						
-						final int version = buffer - 5000;
+						final int version = buffer - PROTOCOL_TAG_VERSION;
 						
 						System.out.println ("[Tact] says \"Hi\" - Now up and running version " + version + ", good to go!");
 					}
 				}else if (buffer >= 0 && buffer < 1024) {
 					// Append to value spectrum
 					bufferTemp = PApplet.append (bufferTemp, buffer);
+				
+				}else if (buffer >= PROTOCOL_TAG_COMMAND_ID && buffer <= PROTOCOL_TAG_COMMAND_ID + PROTOCOL_COMMAND_COUNT_LIMIT) {
 					
-				}else if (buffer >= 2000 && buffer < 2999) {
+					// Set command identifier for upcoming 
+					// data-value transmission
+					commandType = buffer - PROTOCOL_TAG_COMMAND_ID;
+					
+				}else if (buffer >= PROTOCOL_TAG_VALUE_COUNT && buffer <= PROTOCOL_TAG_VALUE_COUNT + PROTOCOL_VALUE_COUNT_LIMIT) {
 					
 					// Number of spectrum data points that are about
 					// to be transmitted from the Tact sensor
-					//final int length = buffer - 2000;
+					// final int length = buffer - 2000;
 					
 					// Clear the temporary value array
 					// to begin with a fresh list
 					bufferTemp = new float[0];
 				
-				}else if (buffer == 2999) {
+				}else if (buffer == PROTOCOL_TAG_END_OF_TRANSMISSION) {
 					
 					// Finish filling up value array by copying 
 					// temp version into the processable counterpart.
-					// A wrapped signal - the TactSpectrum
-					TactSpectrum spectrum = new TactSpectrum (parent.millis (), bufferTemp.clone (), sensors.get (sensorIndex).start (), sensors.get (sensorIndex).step ());
 					
-					// Update the designated sensor instance
-					// by assining the received spectrum.
-					sensors.get (sensorIndex).push (spectrum);
+					switch (commandType) {
+						case PROTOCOL_COMMAND_BIAS:
+							sensors.get (sensorIndex).pushBias (bufferTemp[0] / sensors.get (sensorIndex).latestSpectrum ().length ());
+							break;
+						case PROTOCOL_COMMAND_PEAK:
+							sensors.get (sensorIndex).pushPeak (bufferTemp[0] / TactConstants.AMPLITUDE_MAX);
+							break;
+						case PROTOCOL_COMMAND_SPECTRUM:
+							// A wrapped signal - the TactSpectrum
+							TactSpectrum spectrum = new TactSpectrum (parent.millis (), bufferTemp.clone (), sensors.get (sensorIndex).start (), sensors.get (sensorIndex).step ());
+							
+							// Update the designated sensor instance
+							// by assining the received spectrum.
+							sensors.get (sensorIndex).push (spectrum);
+							
+							break;
+						default:
+							System.err.println ("[Tact] Unknown command type in sensor response: " + buffer);
+					}
 					
 					try {
 						// Tell all listeners (PApplet etc.) that 
-						// there new data is available. 
+						// there new data is available.
 						dispatchEvent (new TactEvent (this, sensors.get (sensorIndex)));
 						
 					}catch (Exception e) {
@@ -331,8 +424,8 @@ public class Tact {
 					
 					bufferTemp = new float[0];
 					
-				}else if (buffer >= 3000 && buffer < 3999) {
-					sensorIndex = buffer - 3000;
+				}else if (buffer >= PROTOCOL_TAG_SENSOR_INDEX && buffer < PROTOCOL_TAG_SENSOR_INDEX + PROTOCOL_SENSOR_INDEX_LIMIT) {
+					sensorIndex = buffer - PROTOCOL_TAG_SENSOR_INDEX;
 				}else{
 					System.out.println ("[Tact] Received unknown byte " + buffer);
 				}
@@ -439,7 +532,16 @@ public class Tact {
 					for (Integer i : sensors.keySet ()) {
 						
 						// Request values
-						serial.write ('G');
+						if (sensors.get (i).mode ().equalsIgnoreCase (BIAS)) {
+							serial.write ('b');
+						}
+						else if (sensors.get (i).mode ().equalsIgnoreCase (PEAK)) {
+							serial.write ('p');
+						}
+						else if (sensors.get (i).mode().equalsIgnoreCase (SPECTRUM)) {
+							serial.write ('s');
+						}
+						
 						serial.write (' ');
 						serial.write (Integer.toString (i));
 						serial.write (' ');
