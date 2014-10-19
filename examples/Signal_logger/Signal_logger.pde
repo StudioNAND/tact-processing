@@ -36,7 +36,7 @@ void setup() {
   size(800, 600);
   
   // Create new Tact toolkit
-  tact = new Tact(this);
+  tact = new Tact(this, 5);
   
   // This will slow down the tact sensor
   // by waiting 70 milli-seconds between 
@@ -57,9 +57,8 @@ void setup() {
   }
   
   // Start up the Tact sensor by 
-  // listing on Serial port 5
-  // (you might have to adjust that)
-  tact.start(5);
+  // listing on Serial port
+  tact.start();
   
   timeZone = TimeZone.getDefault();
   isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");

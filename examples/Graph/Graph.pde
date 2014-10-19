@@ -21,7 +21,7 @@ void setup () {
   size (900, 750);
   
   // Create new Tact toolkit
-  tact = new Tact(this);
+  tact = new Tact(this, 5);
   // Create a Tact sensor and tell it which parts 
   // to get of the sensor's signal spectrum.
   sensor = tact.addSensor (0, 48, 32, 2);
@@ -29,7 +29,7 @@ void setup () {
   // Start up the Tact sensor by 
   // listing on Serial port 5
   // (you might have to adjust that)
-  tact.start(5);
+  tact.start();
   
   float w = width - 40;
   //

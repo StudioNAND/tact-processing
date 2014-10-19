@@ -53,6 +53,16 @@ public class Tact implements TactConstants {
 	private float[] bufferTemp = new float[0];
 	
 	/**
+	 * Serial port for sensor communication..
+	 */
+	private int serialIndex;
+	
+	/**
+	 * Serial baudrate for sensor communication.
+	 */
+	private int serialBaudrate;
+	
+	/**
 	 * Flag if update cycle is currently active.
 	 */
 	private boolean running = false;
@@ -89,15 +99,34 @@ public class Tact implements TactConstants {
 	Serial serial;
 	
 	/**
-	 * Tact core 
+	 * Tact core.
 	 * 
 	 * <code>Tact tact = new Tact(this, 5);</code>
 	 * 
-	 * @param parent reference to the main sketch instantiation
-	 * @since 0.1
+	 * @param parent reference to the main sketch instantiation.
+	 * @param serialIndex the serial port to listen to. This index 
+	 * corresponds to the order within the processing.Serial.list() array.
+	 * @since 0.2
 	 */
-	public Tact (PApplet parent) {
+	public Tact (PApplet parent, final int serialIndex) {
+		this (parent, serialIndex, BAUD_RATE);
+	}
+	
+	/**
+	 * Tact core.
+	 * 
+	 * <code>Tact tact = new Tact(this, 5, 115200);</code>
+	 * 
+	 * @param parent reference to the main sketch instantiation
+	 * @param serialIndex the serial port to listen to. This index 
+	 * corresponds to the order within the processing.Serial.list() array.
+	 * @param baudrate pulses per second.
+	 * @since 0.2
+	 */
+	public Tact (PApplet parent, final int serialIndex, final int baudrate) {
 		this.parent = parent;
+		this.serialIndex = serialIndex;
+		serialBaudrate = baudrate;
 		sensors = new HashMap<Integer, TactSensor>();
 		
 		try {
@@ -119,20 +148,6 @@ public class Tact implements TactConstants {
 	}
 	
 	/**
-	 * Starts Tact sensor communication. By doing so Tact will 
-	 * initiate an ongoing serial thread that constantly requests 
-	 * signal updates for all registered sensors.
-	 * 
-	 * @param serialIndex the serial port to listen to. This 
-	 *                    index corresponds to the order within 
-	 *                    the processing.Serial.list() array.
-	 * @since 0.1
-	 */
-	public void start (final int serialIndex) {
-		start (serialIndex, BAUD_RATE);
-	}
-	
-	/**
 	 * Starts Tact sensor communication with specific baud rate. 
 	 * By doing so Tact will initiate an ongoing serial thread that 
 	 * constantly requests signal updates for all registered sensors.
@@ -143,13 +158,13 @@ public class Tact implements TactConstants {
 	 * @param baudrate pulses per second.
 	 * @since 0.1
 	 */
-	public void start (final int serialIndex, final int baudrate) {
+	public void start () {
 		
 		// Check if Serial is availble (in pool)
 		if (Serial.list ().length >= serialIndex) {
 			
 			// Initiate Serial connection
-			serial = new Serial (parent, Serial.list ()[serialIndex], baudrate);
+			serial = new Serial (parent, Serial.list ()[serialIndex], serialBaudrate);
 			// First of all, clear the port.
 			serial.clear ();
 			

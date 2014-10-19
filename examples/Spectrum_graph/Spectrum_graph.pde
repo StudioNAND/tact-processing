@@ -16,14 +16,14 @@ void setup () {
   strokeWeight (5);
 
   // Init Tact sensor
-  tact = new Tact (this);
+  tact = new Tact (this, 5);
   
   // Create a Tact sensor and tell it which parts 
   // to get of the sensor's signal spectrum.
   sensor = tact.addSensor(0, 44, 32);
   
-  // Start listening on serial port 5
-  tact.start (5);
+  // Start listening on serial port
+  tact.start ();
 }
 
 void draw () {

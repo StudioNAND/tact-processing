@@ -16,14 +16,14 @@ void setup() {
   size(800, 600);
   
   // Create new Tact toolkit
-  tact = new Tact(this);
+  tact = new Tact(this, 5);
   
   // Create a sensor and tell Tact only to return 
   // the bias value for that field.
   sensor = tact.addSensor(0, 44, 32, Tact.BIAS);
   
-  // Start listing on Serial port 5
-  tact.start(5);
+  // Start listing on Serial port
+  tact.start();
 }
 
 void draw() {
