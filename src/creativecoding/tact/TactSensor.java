@@ -334,6 +334,7 @@ public class TactSensor implements TactConstants {
 	 * Data request and transfer mode between implementation and sensor.
 	 * <ul>
 	 * <li>{@link TactConstants#BIAS}, bias value only</li>
+	 * <li>{@link TactConstants#BIAS_PEAK}, bias and peak value</li>
 	 * <li>{@link TactConstants#PEAK}, peak value only</li>
 	 * <li>{@link TactConstants#SPECTRUM}, full spectrum. 
 	 * Including information about bias and peak.</li>

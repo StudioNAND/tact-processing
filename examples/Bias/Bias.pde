@@ -19,7 +19,7 @@ void setup() {
   tact = new Tact(this, 5);
   
   // Create a sensor and tell Tact only to return 
-  // the bias value for that field.
+  // the bias value for the given spectrum range.
   sensor = tact.addSensor(0, 44, 32, Tact.BIAS);
   
   // Start listing on Serial port

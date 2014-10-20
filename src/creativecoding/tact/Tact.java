@@ -212,7 +212,7 @@ public class Tact implements TactConstants {
 	 * 
 	 * @param pin which will be monitored.
 	 * @param mode request type when communicating with the sensor: 
-	 * {@link TactConstants#SPECTRUM}, {@link TactConstants#BIAS}, {@link TactConstants#PEAK}.
+	 * {@link TactConstants#SPECTRUM}, {@link TactConstants#BIAS}, {@link TactConstants#BIAS_PEAK}, {@link TactConstants#PEAK}.
 	 * @return the instantiated sensor as {@link TactSensor}.
 	 * @since 0.2
 	 */
@@ -246,7 +246,8 @@ public class Tact implements TactConstants {
 	 * @param readings total number of measurements taken from
 	 * the signal spectrum.
 	 * @param mode request type when communicating with the sensor: 
-	 * {@link TactConstants#SPECTRUM}, {@link TactConstants#BIAS}, {@link TactConstants#PEAK}.
+	 * {@link TactConstants#SPECTRUM}, {@link TactConstants#BIAS}, 
+	 * {@link TactConstants#BIAS_PEAK}, {@link TactConstants#PEAK}.
 	 * @return the instantiated sensor as {@link TactSensor}.
 	 * @since 0.2
 	 */
@@ -281,7 +282,8 @@ public class Tact implements TactConstants {
 	 * 		  the sensors's signal spectrum.
 	 * @param step width between measure points.
 	 * @param mode request type when communicating with the sensor: 
-	 * 		  {@link TactConstants#SPECTRUM}, {@link TactConstants#BIAS}, {@link TactConstants#PEAK}.
+	 * 		  {@link TactConstants#SPECTRUM}, {@link TactConstants#BIAS}, 
+	 * {@link TactConstants#BIAS_PEAK}, {@link TactConstants#PEAK}.
 	 * @return sensor instance as {@link TactSensor}.
 	 * @since 0.2
 	 */
@@ -321,7 +323,8 @@ public class Tact implements TactConstants {
 	 * @param bufferSize number of stored {@link TactSpectrum} 
 	 * instances that previously have been received.
 	 * @param mode request type when communicating with the sensor: 
-	 * {@link TactConstants#SPECTRUM}, {@link TactConstants#BIAS}, {@link TactConstants#PEAK}.
+	 * {@link TactConstants#SPECTRUM}, {@link TactConstants#BIAS}, 
+	 * {@link TactConstants#BIAS_PEAK}, {@link TactConstants#PEAK}.
 	 * @return sensor instance as {@link TactSensor}.
 	 * @since 0.2
 	 */
@@ -387,7 +390,7 @@ public class Tact implements TactConstants {
 					// Append to value spectrum
 					bufferTemp = PApplet.append (bufferTemp, buffer);
 				
-				}else if (buffer >= PROTOCOL_TAG_COMMAND_ID && buffer <= PROTOCOL_TAG_COMMAND_ID + PROTOCOL_COMMAND_COUNT_LIMIT) {
+				}else if (buffer >= PROTOCOL_TAG_COMMAND_ID && buffer < PROTOCOL_TAG_COMMAND_ID + PROTOCOL_COMMAND_COUNT_LIMIT) {
 					
 					// Set command identifier for upcoming 
 					// data-value transmission
@@ -415,6 +418,10 @@ public class Tact implements TactConstants {
 						case PROTOCOL_COMMAND_PEAK:
 							sensors.get (sensorIndex).pushPeak (bufferTemp[0] / TactConstants.AMPLITUDE_MAX);
 							break;
+						case PROTOCOL_COMMAND_BIAS_PEAK:
+							sensors.get (sensorIndex).pushBias (bufferTemp[0] / sensors.get (sensorIndex).latestSpectrum ().length ());
+							sensors.get (sensorIndex).pushPeak (bufferTemp[1] / TactConstants.AMPLITUDE_MAX);
+							break;
 						case PROTOCOL_COMMAND_SPECTRUM:
 							// A wrapped signal - the TactSpectrum
 							TactSpectrum spectrum = new TactSpectrum (parent.millis (), bufferTemp.clone (), sensors.get (sensorIndex).start (), sensors.get (sensorIndex).step ());
@@ -425,7 +432,7 @@ public class Tact implements TactConstants {
 							
 							break;
 						default:
-							System.err.println ("[Tact] Unknown command type in sensor response: " + buffer);
+							System.err.println ("[Tact] Unknown command type in sensor response: " + commandType);
 					}
 					
 					try {
@@ -553,8 +560,11 @@ public class Tact implements TactConstants {
 						else if (sensors.get (i).mode ().equalsIgnoreCase (PEAK)) {
 							serial.write ('p');
 						}
-						else if (sensors.get (i).mode().equalsIgnoreCase (SPECTRUM)) {
+						else if (sensors.get (i).mode ().equalsIgnoreCase (SPECTRUM)) {
 							serial.write ('s');
+						}
+						else if (sensors.get (i).mode ().equalsIgnoreCase (BIAS_PEAK)) {
+							serial.write ('x');
 						}
 						
 						serial.write (' ');

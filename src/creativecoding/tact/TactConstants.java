@@ -34,7 +34,7 @@ public interface TactConstants {
 	/**
 	 * 
 	 */
-	public static final String BIAS_PEAK = "bias and peak";
+	public static final String BIAS_PEAK = "bias-peak";
 	
 	/**
 	 * 
@@ -69,6 +69,8 @@ public interface TactConstants {
 	public static final int PROTOCOL_COMMAND_PEAK = 1;
 	
 	public static final int PROTOCOL_COMMAND_BIAS = 2;
+	
+	public static final int PROTOCOL_COMMAND_BIAS_PEAK = 3;
 	
 	public static final int PROTOCOL_SENSOR_INDEX_LIMIT = 64;
 	

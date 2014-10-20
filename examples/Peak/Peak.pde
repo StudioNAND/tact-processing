@@ -1,6 +1,6 @@
 /**
  * Tact for Processing example
- * Studio NAND (http://www.nand.io), Nov 2013
+ * Studio NAND (http://www.nand.io), Okt 2014
  *
  * https://github.com/StudioNAND/tact-processing 
  */
@@ -20,7 +20,7 @@ void setup() {
   tact = new Tact(this, 5);
   
   // Create a sensor and tell Tact only to return 
-  // the peak value for that field.
+  // the peak value for the given spectrum range.
   sensor = tact.addSensor(0, 44, 32, Tact.PEAK);
   
   // Start listing on Serial port
