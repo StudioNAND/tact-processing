@@ -438,7 +438,7 @@ public class Tact implements TactConstants {
 					try {
 						// Tell all listeners (PApplet etc.) that 
 						// there new data is available.
-						dispatchEvent (new TactEvent (this, sensors.get (sensorIndex)));
+						dispatchEvent (new TactEvent (this, sensors.get (sensorIndex).mode (), sensors.get (sensorIndex)));
 						
 					}catch (Exception e) {
 						System.err.println("[Tact] Could not assign TactSpectrum to sensor with index " + sensorIndex + ".");

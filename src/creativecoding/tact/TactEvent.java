@@ -34,8 +34,11 @@ public class TactEvent extends EventObject {
 	
 	public final TactSensor sensor;
 	
-	public TactEvent (final Object source, final TactSensor sensor) {
+	public final String type;
+	
+	public TactEvent (final Object source, final String type, final TactSensor sensor) {
 		super (source);
 		this.sensor = sensor;
+		this.type = type;
 	}
 }
