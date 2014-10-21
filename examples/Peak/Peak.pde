@@ -17,6 +17,7 @@ void setup() {
   fill (255);
   
   // Create new Tact toolkit
+  // listening on serial port 5
   tact = new Tact(this, 5);
   
   // Create a sensor and tell Tact only to return 
@@ -24,7 +25,7 @@ void setup() {
   sensor = tact.addSensor(0, 44, 32, Tact.PEAK);
   
   // Start listing on Serial port
-  tact.start();
+  tact.startUpdates();
 }
 
 void draw() {

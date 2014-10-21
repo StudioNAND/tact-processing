@@ -22,7 +22,7 @@ void setup() {
   sensor = tact.addSensor (0, 0, 64, 3);
   
   // Start frequent updates
-  tact.start();
+  tact.startUpdates();
   
   // Create signal spectrum graph instance
   // by naming position and dimenstion

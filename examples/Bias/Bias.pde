@@ -23,7 +23,7 @@ void setup() {
   sensor = tact.addSensor(0, 44, 32, Tact.BIAS);
   
   // Start listing on Serial port
-  tact.start();
+  tact.startUpdates();
 }
 
 void draw() {

@@ -144,7 +144,7 @@ public class Tact implements TactConstants {
 	 * Called by PApplet on exit to stop sensor communication.
 	 */
 	public void dispose () {
-		stop();
+		stopUpadtes();
 	}
 	
 	/**
@@ -158,7 +158,7 @@ public class Tact implements TactConstants {
 	 * @param baudrate pulses per second.
 	 * @since 0.1
 	 */
-	public void start () {
+	public void startUpdates () {
 		
 		// Check if Serial is availble (in pool)
 		if (Serial.list ().length >= serialIndex) {
@@ -190,7 +190,7 @@ public class Tact implements TactConstants {
 				System.out.println ("[" + i + "]\t" + Serial.list ()[i]);
 			
 			// Stop all activities
-			stop();
+			stopUpadtes();
 		}
 	}
 	
@@ -338,7 +338,7 @@ public class Tact implements TactConstants {
 	 * Stops all Tact updates.
 	 * @since 0.1
 	 */
-	public void stop () {
+	public void stopUpadtes () {
 		if (running) {
 			thread.interrupt ();
 			serial.stop ();
@@ -348,7 +348,7 @@ public class Tact implements TactConstants {
 	
 	/**
 	 * If <code>Tacat</code> sensor communication is present. 
-	 * This flag will be enabled by the <code>start()</code> 
+	 * This flag will be enabled by the <code>startUpdates()</code> 
 	 * method and keeps the serial-update thread alive, until 
 	 * <code>stop()</code> is triggered. 
 	 * @return status if <code>Tact</code> is active as <code>
@@ -537,7 +537,7 @@ public class Tact implements TactConstants {
 			
 			if (sensors.size () == 0) {
 				System.err.println ("[Tact] updates stopped. There are no sensors registered. Create one using tact.addSensor(\"tact1\")");
-				stop();
+				stopUpadtes();
 				return;
 			}
 									
@@ -600,7 +600,7 @@ public class Tact implements TactConstants {
 			if (!running && parent.millis () >= runUntil) {
 				System.err.println ("[Tact] Sensor is not responding. Please check the connection and make sure that it is running the right Arduino sketch.");
 				// Destroy thread :(
-				stop();
+				stopUpadtes();
 			}
 		}
 	}

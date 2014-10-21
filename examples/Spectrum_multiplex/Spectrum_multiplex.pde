@@ -20,6 +20,7 @@ void setup() {
   strokeWeight (5);
   
   // Init Tact sensor
+  // listening on serial port 5
   tact = new Tact (this, 5);
   
   // Array to store sensor inputs
@@ -31,8 +32,8 @@ void setup() {
     sensors[i] = tact.addSensor (i, 48, 32, 2);
   }
   
-  // Start listening on serial port
-  tact.start ();
+  // Start frequent updates
+  tact.startUpdates ();
 }
 
 void draw() {

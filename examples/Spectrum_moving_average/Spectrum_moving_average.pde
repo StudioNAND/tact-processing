@@ -17,14 +17,15 @@ void setup () {
   noFill ();
   
   // Init Tact toolkit
+  // listening on serial port 5
   tact = new Tact (this, 5);
   
   // Create a Tact sensor and tell it which parts 
   // to get of the sensor's signal spectrum.
   sensor = tact.addSensor(0, 44, 32);
   
-  // Start listening on serial port 5
-  tact.start ();
+  // Start frequent updates
+  tact.startUpdates();
 }
 
 void draw () {

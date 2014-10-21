@@ -18,11 +18,14 @@ void setup () {
   textSize (13);
   
   // Init Tact sensor
+  // listening on serial port 5
   tact = new Tact (this, 5);
+  
   // Registers a new sensor
   sensor = tact.addSensor (0, 48, 32, 1, 28);
-  // Start listening on serial port
-  tact.start ();
+  
+  // Start frequent updates
+  tact.startUpdates ();
 }
 
 void draw () {

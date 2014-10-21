@@ -36,6 +36,7 @@ void setup() {
   size(800, 600);
   
   // Create new Tact toolkit
+  // listening on serial port 5
   tact = new Tact(this, 5);
   
   // This will slow down the tact sensor
@@ -56,9 +57,8 @@ void setup() {
     println("Oh boy - failed while trying to create the csv...");
   }
   
-  // Start up the Tact sensor by 
-  // listing on Serial port
-  tact.start();
+  // Start up frequent updates
+  tact.startUpdates();
   
   timeZone = TimeZone.getDefault();
   isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");

@@ -60,7 +60,7 @@ public class TactSensor implements TactConstants {
 	
 	/**
 	 * Signal spectrum start index.
-	 * @see TactSpectrum#start()
+	 * @see TactSpectrum#startUpdates()
 	 */
 	private int start;
 	

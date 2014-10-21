@@ -21,18 +21,17 @@ void setup () {
   size (900, 750);
   
   // Create new Tact toolkit
+  // listening on Serial port 5
   tact = new Tact(this, 5);
+  
   // Create a Tact sensor and tell it which parts 
   // to get of the sensor's signal spectrum.
   sensor = tact.addSensor (0, 48, 32, 2);
   
-  // Start up the Tact sensor by 
-  // listing on Serial port 5
-  // (you might have to adjust that)
-  tact.start();
+  // Start frequent updates
+  tact.startUpdates();
   
   float w = width - 40;
-  //
   graphSpectrum = new TactGraph (this, 10, 40, w, height * 0.45f);
   graphBias = new TactGraph (this, 10, height * 0.55f, w, height * 0.2f);
   graphPeak = new TactGraph (this, 10, height * 0.8f, w, height * 0.2f);
