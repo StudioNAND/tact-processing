@@ -161,7 +161,7 @@ public class Tact implements TactConstants {
 	public void startUpdates () {
 		
 		// Check if Serial is availble (in pool)
-		if (Serial.list ().length >= serialIndex) {
+		if (serialIndex >= 0 && serialIndex < Serial.list ().length) {
 			
 			// Initiate Serial connection
 			serial = new Serial (parent, Serial.list ()[serialIndex], serialBaudrate);
