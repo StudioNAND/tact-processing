@@ -21,7 +21,7 @@ The following snippets outline all necessary steps for communicating with a Tact
 ### Setup
 To get started, you've to include the `creativecoding.tact` and `processing.serial` libraries using Sketch → Import library. Serial is a dependency of the tact library, but does not come with it to prevent multiple imports. Please make sure to import both. Then simply declare a single Tact and at least one TactSensor instance.
 
-```
+```java
 import creativecoding.tact.*;
 import processing.serial.*;
 
@@ -31,7 +31,7 @@ TactSensor sensor;
 
 Next up, instantiate the wrapper and start-up sensor communication by calling `startUpdates()`.
 
-```
+```java
 void setup() {
     tact = new Tact(this, 5);
     sensor = tact.addSensor(0);
@@ -44,7 +44,7 @@ These three lines will invoke an automatic update procedure that makes the lates
 ### Accessing sensor data
 All sensor data is frequently updated and made accessible via one of the several getters. For example TactSensor's `bias()` function.
 
-```
+```java
 void draw() {
     background(0);
     rect(0, 0, sensor.bias() * width);
@@ -53,7 +53,7 @@ void draw() {
 
 Likewise, each signal spectrum that becomes available will be published via the `tactEvent()` function. Simply overwrite it in your Processing sketch and receive frequent update notifications.
 
-```
+```java
 void tactEvent(TactEvent event) {
     println(event.sensor.name() + ": " + event.sensor.bias());
 }
@@ -61,7 +61,7 @@ void tactEvent(TactEvent event) {
 
 If your more interessted in turning one of your classes into a TactEvent delegate. Simply implement the TactListener interface and overwrite its callback function. Remember that there is no need for that when your class already extends PApplet.
 
-```
+```java
 class MyTactListener implements TactListener {
 
 	public void tactEvent(TactEvemt event) {
@@ -72,7 +72,7 @@ class MyTactListener implements TactListener {
 
 Make sure to also register your listener instances.
 
-```
+```java
 // Instantiate your listener
 MyTactListener myListener = new MyTactListener();
 
@@ -88,7 +88,7 @@ tact.removeTactListener(myListener);
 ### Example
 The following example outlines the fundamental sketch structure.
 
-```
+```java
 import creativecoding.tact.*;
 import processing.serial.*;
 
@@ -128,7 +128,7 @@ void draw() {
 
 This processing project comes with a visualization utility class for plotting out spectrum, bias and peak charts. The following example outlines how to render a simple signal spectrum of a given sensor.
 
-```
+```java
 import creativecoding.tact.*;
 import processing.serial.*;
 
@@ -165,7 +165,7 @@ Its pretty straight forward and meant to show all relevant information for debug
 
 Beside plotting the spectrum we've implemented methods for displaying bias and peak histograms. And included two different default color themes. The following snipped will allow you to switch between both when Processing's key event is triggered.
 
-```
+```java
 void keyReleased () {
   TactGraph.theme = (black) ? TactGraph.bright : TactGraph.dark;
 }
@@ -174,7 +174,7 @@ void keyReleased () {
 ### Speeding it up
 This library project develops simultaneously with our explorations in the field of capacitive touch. Its intention is to provide rapid experiments, without refusing access to the raw data - less code, no constrains. One of the major pitfalls when working with Arduino and multiple sensors is the lack of speed and responsiveness due to the time it takes when transferring multiple signal spectrums. Therefore we've implemented the option to do the heavy lifting on the micro-controller while only transmitting the result. Specify the value you are interested in when adding the sensor:
 
-```
+```java
 TactSensor sensor = tact.addSensor(0, Tact.BIAS);
 ```
 
@@ -187,7 +187,7 @@ Which in that case will only request and receive `bias()` data from the sensor a
 
 You might want to gear your program, since the first three cases will not provide any signal spectrum.
 
-```
+```java
 if (mySensor.hasSpectrum() == false) {
    println("Accessing the mySensor.buffer[0] wouldn't be a good idea.");
 }
