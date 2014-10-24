@@ -4,9 +4,11 @@ A Processing library to communicate with the Tact sensor – an electronic circu
 
 ----
 
+![Tact Sensor](https://s3-eu-west-1.amazonaws.com/tact/assets/tactA-demo01/tactA-demo01_728.gif)
 
 This library belongs to the following repositories:
 
+ * **[Tact Hardware](https://github.com/StudioNAND/tact-hardware)** contains sensor schematics.
  * **[Tact Arduino sketches](https://github.com/StudioNAND/tact-arduino-sketch)** and **[Tact Arduino library](https://github.com/philippschmitt/tact-arduino)** (by Philipp Schmitt) to drive the circuit interface. Those scripts are for handling serial requests and serving sensor data.
  * This project - **Tact for Processing**, for retrieving and processing sensor data in an easy manner.
 
@@ -42,6 +44,9 @@ void setup() {
 These three lines will invoke an automatic update procedure that makes the latest values for all added sensors available. Additional settings include the buffer size, signal spectrum start and length, etc – consult the examples or reference for further details.
 
 ### Accessing sensor data
+
+![Peak and Bias values](https://s3-eu-west-1.amazonaws.com/tact/assets/diagram/tact-spectrum-peak-bias.png)
+
 All sensor data is frequently updated and made accessible via one of the several getters. For example TactSensor's `bias()` function.
 
 ```java
@@ -55,7 +60,7 @@ Likewise, each signal spectrum that becomes available will be published via the 
 
 ```java
 void tactEvent(TactEvent event) {
-    println(event.sensor.name() + ": " + event.sensor.bias());
+    println("bias: " + event.sensor.bias());
 }
 ```
 
@@ -64,7 +69,7 @@ If your more interessted in turning one of your classes into a TactEvent delegat
 ```java
 class MyTactListener implements TactListener {
 
-	public void tactEvent(TactEvemt event) {
+	public void tactEvent(TactEvent event) {
 		System.out.println("Just received " + event.type + " event.");
 	}
 }
@@ -200,9 +205,9 @@ The Source code is contained within the download and also available on [github](
 Any questions or feedback? Contact me on [twitter](http://www.twitter.com/steffen_fiedler). For bug reports, please use the [issue tracker](issues).
 
 ## Who made this?
-This library has been developed by [Studio NAND](http://www.nand.io/?ref=github-tact-processing). It’s based on many smart ideas – so cheers to everyone who contributed her/his time to investigate capacitive technology! Special thanks to the team around [Ivan Poupyrev](http://www.ivanpoupyrev.com/) for all the research within this field and [Mads Hobye](http://www.hobye.dk/) for his [Arduino tutorial](http://www.instructables.com/id/Touche-for-Arduino-Advanced-touch-sensing/) about advanced touch sensing. All of that has been a big help and inspiration.
+This library has been developed by [Studio NAND](http://www.nand.io). It’s based on many smart ideas – so cheers to everyone who contributed her/his time to investigate capacitive technology! Special thanks to the team around [Ivan Poupyrev](http://www.ivanpoupyrev.com/) for all the research within this field and [Mads Hobye](http://www.hobye.dk/) for his [Arduino tutorial](http://www.instructables.com/id/Touche-for-Arduino-Advanced-touch-sensing/) about advanced touch sensing. All of that has been a big help and inspiration.
 
 ## Copyright
-Copyright (c) 2013 [Studio NAND](http://www.nand.io/?ref=github-tact-processing). Licensed under the GNU Lesser General Public License. See *license.txt* for further details.
+Copyright (c) 2013 [Studio NAND](http://www.nand.io). Licensed under the GNU Lesser General Public License. See *license.txt* for further details.
 
 Any example code is released into the public domain.
